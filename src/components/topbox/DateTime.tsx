@@ -32,10 +32,10 @@ const DateTime = () => {
   }, [])
 
   return (
-    <div className="flex flex-col m-w-[33vw]">
-      <h2 className="font-extralight  text-[1.33vw] mb-3">{dateTime.day}</h2>
-      <h2 className="font-black text-[3.5vw] leading-10">{`${dateTime.month} ${dateTime.date}`}</h2>
-      <h2 className="font-extralight ml-auto text-[1.33vw] mt-1">{dateTime.time}</h2>
+    <div className="flex flex-col h-full text-[3vw] align-middle justify-between">
+      <h2 className="font-extralight  text-[61%] mb-3 mr-auto">{dateTime.day}</h2>
+      <h2 className="font-black ml-auto mr-auto leading-10">{`${dateTime.month} ${dateTime.date}`}</h2>
+      <h2 className="font-extralight ml-auto text-[61%] mt-2 mb-0">{dateTime.time}</h2>
     </div>
   )
 }
