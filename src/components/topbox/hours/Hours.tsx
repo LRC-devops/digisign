@@ -3,22 +3,40 @@ import { getHours } from "../../../api/hours";
 import { THour } from "./types";
 import LoadingSpinner from "../../LoadingSpinner";
 import Hour from "./Hour";
+import { ComponentError } from "../../error/types";
 
 const Hours = () => {
   const [data, setData] = useState<THour[] | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<ComponentError>({ hasError: false, msg: null })
 
   useEffect(() => {
     const getData = async () => {
-      setLoading(true)
-      const data = await getHours();
-      setData(data)
-      setLoading(false)
+      try {
+        setLoading(true)
+        const data: THour[] | Error = await getHours();
+
+        if (data instanceof Error) {
+          throw data;
+        }
+        setData(data)
+        setLoading(false)
+
+      } catch (err) {
+        console.error("[Hours]: error getting data: ", err)
+        let error = err as Error;
+        setError({ hasError: true, msg: error.message })
+
+        setLoading(false)
+      }
     }
     getData()
   }, [])
 
-  console.log(data)
+  if (error.hasError) {
+    throw new Error(error.msg || "Unknown error occurred")
+  }
+
 
   if (!data || loading) {
     return <LoadingSpinner loading={true} />

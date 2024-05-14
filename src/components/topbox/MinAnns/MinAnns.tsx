@@ -3,6 +3,7 @@ import { getMinAnns } from "../../../api/minanns";
 import MinAnn from "./MinAnn";
 import LoadingSpinner from "../../LoadingSpinner";
 import { MinimizedAnnouncement } from "./types";
+import { ComponentError } from "../../error/types";
 
 interface State {
   announcements: MinimizedAnnouncement[];
@@ -40,18 +41,31 @@ const MinAnns = () => {
   const [data, setData] = useState<MinimizedAnnouncement[] | null>(null)
   const [state, dispatch] = useReducer(reducer, initialState)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<ComponentError>({ hasError: false, msg: null });
+
 
 
   useEffect(() => {
     const getAnnouncements = async () => {
-      console.log('fetching announcements')
-      setLoading(true)
-      const data: MinimizedAnnouncement[] = await getMinAnns();
-      if (data) {
-        dispatch({ type: 'setAnnouncements', payload: data })
+      try {
+
+        console.log('fetching announcements')
+        setLoading(true)
+        const data: MinimizedAnnouncement[] | Error = await getMinAnns();
+        if (data instanceof Error) {
+          throw data;
+        }
+        if (data) {
+          dispatch({ type: 'setAnnouncements', payload: data })
+        }
+        setData(data)
+        setLoading(false)
+      } catch (err) {
+        setLoading(false)
+        const error = err as Error;
+        setError({ hasError: true, msg: error.message })
+        console.error("[MinAnns]: error fetching announcements: ", err);
       }
-      setData(data)
-      setLoading(false)
     }
     if (state.announcements.length === 0) {
       getAnnouncements();
@@ -64,6 +78,9 @@ const MinAnns = () => {
     // }
   }, [])
 
+  if (error.hasError) {
+    throw new Error(error.msg || "Unknown error occurred")
+  }
   useEffect(() => {
     const timer = setInterval(() => {
       console.log('next announcement')
@@ -75,9 +92,13 @@ const MinAnns = () => {
     }
   }, [state.duration])
 
+  if (error.hasError) {
+    throw new Error(error.msg || "Unknown error occurred")
+  }
   if (!data || loading) {
     return <LoadingSpinner loading={true} />
   }
+
 
 
   return (

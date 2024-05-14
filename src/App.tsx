@@ -21,7 +21,7 @@ function App() {
   return (
     <main className="flex flex-col justify-between align-middle w-[100vw] h-[100vh] p-10">
       <TopBox />
-      <div className='bg-red-300 h-full'></div>
+      {/* <div className='bg-red-300 h-full'></div> */}
     </main>
   )
 }
