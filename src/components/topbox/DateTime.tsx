@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Day, Month, formateDateString, getFullDay, getFullMonth, getTime } from "../../utils/datetime"
+import { AnimatePresence, motion } from "framer-motion";
 
 
 type DateTime = {
@@ -32,11 +33,25 @@ const DateTime = () => {
   }, [])
 
   return (
-    <div className="flex flex-col h-full text-[3vw] align-middle justify-between">
-      <h2 className="font-extralight  text-[61%] mb-3 mr-auto">{dateTime.day}</h2>
-      <h2 className="font-black ml-auto mr-auto leading-10">{`${dateTime.month} ${dateTime.date}`}</h2>
-      <h2 className="font-extralight ml-auto text-[61%] mt-2 mb-0">{dateTime.time}</h2>
-    </div>
+    <AnimatePresence>
+      <div className="flex flex-col h-full text-[3vw] min-w-[15vw] align-middle justify-between">
+        <motion.h2
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+          className="font-extralight  text-[61%] mb-3 mr-auto">{dateTime.day}</motion.h2>
+        <motion.h2
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          className="font-black ml-auto mr-auto leading-5">{`${dateTime.month} ${dateTime.date}`}</motion.h2>
+        <motion.h2
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.3 }}
+          className="font-extralight ml-auto text-[61%] mt-2 mb-0">{dateTime.time}</motion.h2>
+      </div>
+    </AnimatePresence>
   )
 }
 

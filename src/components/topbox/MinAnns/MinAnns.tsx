@@ -4,6 +4,8 @@ import MinAnn from "./MinAnn";
 import LoadingSpinner from "../../LoadingSpinner";
 import { MinimizedAnnouncement } from "./types";
 import { ComponentError } from "../../error/types";
+import ProgressBars from "../../pages/ProgressBars";
+
 
 interface State {
   announcements: MinimizedAnnouncement[];
@@ -48,7 +50,6 @@ const MinAnns = () => {
   useEffect(() => {
     const getAnnouncements = async () => {
       try {
-
         console.log('fetching announcements')
         setLoading(true)
         const data: MinimizedAnnouncement[] | Error = await getMinAnns();
@@ -102,8 +103,12 @@ const MinAnns = () => {
 
 
   return (
-    <div>
-      <MinAnn announcement={data[state.curr]} />
+    <div className="w-full h-full">
+      <ProgressBars
+        currentIdx={state.curr}
+        bars={state.announcements.map(a => a.duration)}
+      />
+      <MinAnn key={state.curr} announcement={data[state.curr]} />
     </div>
   )
 }

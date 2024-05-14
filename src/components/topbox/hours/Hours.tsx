@@ -42,7 +42,7 @@ const Hours = () => {
     return <LoadingSpinner loading={true} />
   }
 
-  return <div className="flex flex-col h-full justify-between min-w[22vw]">
+  return <div className="flex flex-col h-full justify-between min-w-[22vw]">
     {data.map((h, idx) => (
       <Hour key={idx} hours={h} />
     ))}
