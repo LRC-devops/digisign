@@ -58,3 +58,13 @@ export const formatTimeString = (time: string): string => {
   return `${+h - 12}:${m} PM`
 }
 
+export type TimeObject = {
+  hours: string,
+  minutes: string
+}
+
+export const getTimeObject = (time: string): TimeObject => {
+  const [hours, minutes] = time.split(":")
+  return { hours, minutes }
+}
+

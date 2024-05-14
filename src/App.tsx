@@ -1,3 +1,4 @@
+import SessionsWidget from './components/sessions/SessionsWidget'
 import TopBox from './components/topbox/TopBox'
 import './index.css'
 /*
@@ -21,6 +22,7 @@ function App() {
   return (
     <main className="flex flex-col justify-between align-middle w-[100vw] h-[100vh] p-10">
       <TopBox />
+      <SessionsWidget />
       {/* <div className='bg-red-300 h-full'></div> */}
     </main>
   )
