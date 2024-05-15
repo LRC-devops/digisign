@@ -58,6 +58,7 @@ const MinAnns = () => {
         if (data) {
           dispatch({ type: 'setAnnouncements', payload: data })
         }
+        // BUG: check diff and only update state if diff
         setData(data)
         setLoading(false)
       } catch (err) {
@@ -97,8 +98,6 @@ const MinAnns = () => {
   if (!data || loading) {
     return <LoadingSpinner loading={true} />
   }
-
-
 
   return (
     <div className="w-full h-full">

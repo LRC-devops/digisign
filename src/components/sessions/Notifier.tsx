@@ -1,4 +1,5 @@
 import { CalendarSession, ScheduledSession } from "./session.model"
+import { motion } from "framer-motion"
 
 type Severity = "error" | "warn" | "neutral" | "success"
 type Props = {
@@ -55,7 +56,11 @@ const Notifier = ({ session }: Props) => {
   if (!notifier) {
     return <></>
   }
-  return <div className={buildClass(notifier?.severity)}>{notifier.message}</div>
+  return <motion.div
+    initial={{ y: -10, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    transition={{ delay: 0.4, duration: 0.3 }}
+    className={buildClass(notifier?.severity)}>{notifier.message}</motion.div>
 }
 
 export default Notifier

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { buildDate } from "../../utils/datetime";
-import { motion } from "framer-motion"
 import { CalendarSession, ScheduledSession } from "./session.model";
 
 type Props = {
@@ -48,7 +47,7 @@ const SessionProgress = ({ session }: Props) => {
       var now = new Date();
       var s = buildDate(start);
       var e = buildDate(end);
-      console.log("[progress]: ", s, e)
+
       if (now < s) {
         const timeUntil = (s.getTime() - now.getTime()) / 60000
         setPre({ isPre: true, timeUntil: timeUntil })
@@ -75,10 +74,11 @@ const SessionProgress = ({ session }: Props) => {
     </div >
   }
 
-  return <div className={getBGClass(session)}>
-    {pre.isPre && <p className="ml-5">Starts in {pre.timeUntil}mins</p>}
-    <motion.div key={progress} style={{ transform: `translate(-${progress}%)` }} className={getFGClass(session)}>
-    </motion.div>
+  return <div
+    className={getBGClass(session)}>
+    {pre.isPre && <p className="ml-5">Starts in {pre.timeUntil}{pre.timeUntil === 1 ? "min" : "mins"}</p>}
+    <div style={{ transform: `translate(-${progress}%)` }} className={getFGClass(session)}>
+    </div>
   </div >
 }
 

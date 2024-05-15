@@ -19,6 +19,7 @@ export abstract class Session<T extends ISession> {
   upPhoto?: UPPhoto
   mode: string
   service: string
+  id: string
 
 
   constructor(session: T) {
@@ -29,6 +30,7 @@ export abstract class Session<T extends ISession> {
     this.photo = session.signageImage || null;
     this.mode = session.mode
     this.service = session.service
+    this.id = session.docId
   }
 
   async initalize(): Promise<void> {

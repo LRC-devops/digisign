@@ -8,8 +8,7 @@ export type UPPhoto = {
 }
 type UPRes = {
   user: {
-    first_name: string,
-    last_name: string
+    name: string
   },
   urls: {
     small: string;
@@ -29,7 +28,7 @@ export const getUPPhoto = async (query: string): Promise<UPPhoto | Error> => {
     }
     const photo: UPPhoto = {
       url: data.urls.regular,
-      credits: `${data.user.first_name} ${data.user.last_name}`
+      credits: `${data.user.name}`
     }
     return photo
   } catch (err) {

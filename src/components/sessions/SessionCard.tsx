@@ -1,17 +1,16 @@
-import { ICalendarSession, ISession } from "./types"
-import { CalendarSession, ScheduledSession, isScheduledSession } from './session.model'
+import { CalendarSession, ScheduledSession } from './session.model'
 import ScheduledSessionCard from "./ScheduledSessionCard"
 import CalendarSessionCard from "./CalendarSessionCard"
 import CardContainer from "./CardContainer"
 
 type Props = {
-  session: ISession
+  session: (ScheduledSession | CalendarSession)
 }
 const SessionCard = (props: Props) => {
 
 
   return <CardContainer>
-    {isScheduledSession(props.session) ? <ScheduledSessionCard session={new ScheduledSession(props.session)} /> : <CalendarSessionCard session={new CalendarSession(props.session as ICalendarSession)} />}
+    {props.session instanceof ScheduledSession ? <ScheduledSessionCard key={props.session.id} session={props.session} /> : <CalendarSessionCard key={props.session.id} session={props.session} />}
   </CardContainer>
 }
 
