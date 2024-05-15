@@ -3,7 +3,7 @@ import { ComponentError } from "../error/types";
 import LoadingSpinner from "../LoadingSpinner";
 import SessionCard from "./SessionCard";
 import ErrorBoundary from "../error/ErrorBoundary";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import ProgressBars from "../pages/ProgressBars";
 import { CalendarSession, ScheduledSession } from "./session.model";
 
@@ -13,10 +13,10 @@ interface State {
 }
 type Action =
   | { type: 'next' }
-  | { type: 'setSessions', payload: (ScheduledSession | CalendarSession)[] }
+  | { type: 'setSessions', payload: (ScheduledSession | CalendarSession)[][] }
 
 
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "next":
       const curr = (state.curr + 1) % state.sessions.length;
@@ -49,7 +49,6 @@ const formatSessionsPages = (sessions: (ScheduledSession | CalendarSession)[]): 
   return out;
 }
 
-const DURATION = 12000
 type Props = {
   sessions: (ScheduledSession | CalendarSession)[]
   error: ComponentError,
@@ -61,23 +60,27 @@ const initialState: State = {
 }
 const SessionsWidget = ({ sessions, error, loading }: Props) => {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const DURATION = 10000
 
   useEffect(() => {
-    console.log("updaing sessions and rerendering")
     dispatch({ type: 'setSessions', payload: formatSessionsPages(sessions) })
   }, [sessions])
 
-  console.log("sessions rerendered", state)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (state.sessions.length > 1) {
-        dispatch({ type: "next" })
-      }
+    const init = setTimeout(() => {
+      var interval = setInterval(() => {
+        if (state.sessions.length > 1) {
+          dispatch({ type: "next" })
+        }
+        return () => {
+          clearInterval(interval)
+        }
+      }, DURATION)
     }, DURATION)
 
     return () => {
-      clearInterval(interval)
+      clearTimeout(init)
     }
   }, [])
 

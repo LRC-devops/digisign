@@ -47,7 +47,6 @@ function App() {
   useEffect(() => {
     const getData = async () => {
       try {
-        console.log("refetching data...")
         // if there are sessions displayed no need to show loading spinner
         if (sessions.length < 1) {
           setLoading(true);
@@ -57,11 +56,9 @@ function App() {
           throw res;
         }
         if (isDiffV2(sessions, res)) {
-          console.log("diff")
           let _sessions = await initalizeSessionClasses(res);
           setSessions(_sessions)
         } else {
-          console.log("no diff")
         }
         // call session.initalize
         setLoading(false)
@@ -73,12 +70,11 @@ function App() {
     }
 
     if (sessions.length < 1) {
-      console.log("getting initial data")
       getData()
     }
 
+    // NOTE: while the interval works, I will use MaxAnns to revalidate when they're running
     // const interval = setInterval(async () => {
-    //   console.log("revalidaing")
     //   await getData();
     // }, 150000)
     //

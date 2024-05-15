@@ -17,7 +17,6 @@ const CalendarSessionCard = (props: Props) => {
 
 
   useEffect(() => {
-    console.log("init session...")
     const initSession = async () => {
       try {
         setLoading(true)

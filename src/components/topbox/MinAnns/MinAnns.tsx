@@ -18,7 +18,7 @@ type Action =
   | { type: 'setAnnouncements'; payload: MinimizedAnnouncement[] }
   | { type: 'resetCounter' }
 
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "next":
       const curr = (state.curr + 1) % state.announcements.length;
