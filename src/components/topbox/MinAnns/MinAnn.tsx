@@ -9,10 +9,9 @@ type Props = {
 
 const MinAnn = (props: Props) => {
   const { heading, details, image, subheads } = props.announcement;
-  console.log(image)
   return (
     <AnimatePresence>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex justify-between h-full pb-3" >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full flex justify-between h-full pb-3" >
         <motion.div className="flex flex-col justify-between h-full">
           {subheads.map((h, idx: number) => (
             <motion.h3

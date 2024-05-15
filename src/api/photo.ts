@@ -21,7 +21,12 @@ export const getUPPhoto = async (query: string): Promise<UPPhoto | Error> => {
   try {
     const res = await axios.get(`${API_BASE_URL}/photo/${query}`);
     const data: UPRes = res.data;
-    console.log(data)
+    if (!data.urls) {
+      return {
+        url: "",
+        credits: ""
+      }
+    }
     const photo: UPPhoto = {
       url: data.urls.regular,
       credits: `${data.user.first_name} ${data.user.last_name}`

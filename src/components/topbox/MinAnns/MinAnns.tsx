@@ -50,7 +50,6 @@ const MinAnns = () => {
   useEffect(() => {
     const getAnnouncements = async () => {
       try {
-        console.log('fetching announcements')
         setLoading(true)
         const data: MinimizedAnnouncement[] | Error = await getMinAnns();
         if (data instanceof Error) {
@@ -84,7 +83,6 @@ const MinAnns = () => {
   }
   useEffect(() => {
     const timer = setInterval(() => {
-      console.log('next announcement')
       dispatch({ type: 'next' })
     }, state.duration)
 

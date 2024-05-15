@@ -40,7 +40,7 @@ const SessionsWidget = () => {
     return <LoadingSpinner loading={loading} />
   }
 
-  return <div className="w-full h-full pt-10">
+  return <div className="w-full h-full pt-10 flex flex-wrap justify-between gap-3">
     <ErrorBoundary>
       {data.map((s: ISession, idx: number) => (
         <SessionCard session={s} key={idx} />

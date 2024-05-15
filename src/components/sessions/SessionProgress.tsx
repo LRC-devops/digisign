@@ -1,40 +1,37 @@
 import { useEffect, useState } from "react"
-import { getTimeObject } from "../../utils/datetime";
+import { buildDate } from "../../utils/datetime";
 import { motion } from "framer-motion"
-import { ScheduledSession } from "./session.model";
+import { CalendarSession, ScheduledSession } from "./session.model";
 
 type Props = {
-  session: ScheduledSession
+  session: ScheduledSession | CalendarSession
 }
 
-const buildDate = (time: string): Date => {
-  let date = new Date();
-  var { hours, minutes } = getTimeObject(time);
-  date.setHours(+hours)
-  date.setMinutes(+minutes)
-  return date;
-}
 
-const getBGClass = (session: ScheduledSession) => {
+const getBGClass = (session: ScheduledSession | CalendarSession) => {
   var baseStr = "w-full h-6"
   if (session.isCancelled()) {
     return baseStr + " bg-cancel-900"
   }
-  if (session.isTemp()) {
-    return baseStr + " bg-temp-900"
+  if (session instanceof ScheduledSession) {
+    if (session?.isTemp()) {
+      return baseStr + " bg-temp-900"
+    }
   }
   if (session.mode === "zoom") {
     return baseStr + " bg-green-900"
   }
   return baseStr + " bg-gold-900"
 }
-const getFGClass = (session: ScheduledSession) => {
+const getFGClass = (session: ScheduledSession | CalendarSession) => {
   var baseStr = "w-full h-6"
   if (session.isCancelled()) {
     return baseStr + " bg-cancel-500"
   }
-  if (session.isTemp()) {
-    return baseStr + " bg-temp-500"
+  if (session instanceof ScheduledSession) {
+    if (session?.isTemp()) {
+      return baseStr + " bg-temp-500"
+    }
   }
   if (session.mode === "zoom") {
     return baseStr + " bg-green-500"
@@ -51,18 +48,15 @@ const SessionProgress = ({ session }: Props) => {
       var now = new Date();
       var s = buildDate(start);
       var e = buildDate(end);
+      console.log("[progress]: ", s, e)
       if (now < s) {
-        console.log((s.getTime() - now.getTime()) / 1000 / 60)
-
-        setPre({ isPre: true, timeUntil: (s.getTime() - now.getTime()) / 1000 / 60 })
-
+        const timeUntil = (s.getTime() - now.getTime()) / 60000
+        setPre({ isPre: true, timeUntil: timeUntil })
         return setProgress(100);
-
       }
       var total = e.getTime() - s.getTime();
       var prog = (e.getTime() - now.getTime()) / total * 100
       setProgress(Math.floor(prog))
-
     }
 
     const interval = setInterval(() => {
@@ -74,6 +68,7 @@ const SessionProgress = ({ session }: Props) => {
     }
   }, [])
 
+
   if (session.isCancelled()) {
     return <div className={getBGClass(session)}>
       <p className="ml-5 font-bold">Cancelled</p>
@@ -81,7 +76,7 @@ const SessionProgress = ({ session }: Props) => {
   }
 
   return <div className={getBGClass(session)}>
-    {pre.isPre && <p className="ml-5">Session starts in {pre.timeUntil}mins</p>}
+    {pre.isPre && <p className="ml-5">Starts in {pre.timeUntil}mins</p>}
     <motion.div key={progress} style={{ transform: `translate(-${progress}%)` }} className={getFGClass(session)}>
     </motion.div>
   </div >

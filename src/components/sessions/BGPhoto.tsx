@@ -1,14 +1,14 @@
-import Credits from "./Credits"
-import { ScheduledSession } from "./session.model"
+import { CalendarSession, ScheduledSession } from "./session.model"
 
 type Props = {
-  session: ScheduledSession
+  session: ScheduledSession | CalendarSession
 }
 const BGPhoto = ({ session }: Props) => {
-  return <>
-    <img className="absolute top-[5] left-[5] right-[5] bottom-[5] scale-115 z-[-1]" src={session.photo || session.upPhoto?.url} />
-    {session.upPhoto && <Credits credit={session.upPhoto.credits} />}
-  </>
+
+  var uri = session.photo || session.upPhoto?.url || "/card-fallback.jpg"
+  return <div className="absolute top-0 left-0 right-0 bottom-0 bg-red-500 z-[-1]">
+    <img className="w-full h-full object-cover" src={uri} />
+  </div>
 
 }
 

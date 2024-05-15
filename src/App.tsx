@@ -20,10 +20,12 @@ import './index.css'
 function App() {
 
   return (
-    <main className="flex flex-col justify-between align-middle w-[100vw] h-[100vh] p-10">
-      <TopBox />
-      <SessionsWidget />
-      {/* <div className='bg-red-300 h-full'></div> */}
+    <main className="flex w-[100vw] h-[100vh] p-10 bg-[url('/bg.jpg')]">
+      <div className='flex flex-col justify-between align-middle w-full h-full z-0'>
+        <TopBox />
+        <SessionsWidget />
+        {/* <div className='bg-red-300 h-full'></div> */}
+      </div>
     </main>
   )
 }

@@ -40,7 +40,11 @@ export const formateDateString = (date: number): string => {
 
 export const getTime = (date: Date): string => {
   var hours = date.getHours();
-  var minutes = date.getMinutes()
+  var minutes: string | number = date.getMinutes()
+
+  if (minutes < 10) {
+    minutes = `0${minutes}`
+  }
 
   if (hours <= 12) {
     return `${hours}:${minutes} AM`
@@ -68,3 +72,19 @@ export const getTimeObject = (time: string): TimeObject => {
   return { hours, minutes }
 }
 
+export const buildDate = (time24: string): Date => {
+  let date = new Date();
+  var { hours, minutes } = getTimeObject(time24);
+  date.setHours(+hours)
+  date.setMinutes(+minutes)
+  return date;
+}
+export const localeTimeString = (date: Date): string => {
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+export const build24Time = (date: Date) => {
+  return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: '2-digit' })
+  // const [hours, mins] = localeTimeString(date).split(":");
+}
+
+build24Time(new Date())

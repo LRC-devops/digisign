@@ -1,10 +1,9 @@
 import { UPPhoto, getUPPhoto } from "../../api/photo"
-import { formatTimeString } from "../../utils/datetime"
-import { IScheduledSession, ISession } from "./types"
+import { build24Time, formatTimeString, localeTimeString } from "../../utils/datetime"
+import { ICalendarSession, IScheduledSession, ISession } from "./types"
 
 
 export const isScheduledSession = (session: ISession): session is IScheduledSession => {
-  console.log(session.type, "schedules")
   return session.type === "schedules"
 }
 
@@ -41,6 +40,59 @@ export abstract class Session<T extends ISession> {
       throw res;
     }
     this.upPhoto = res;
+  }
+  hasLocation(): boolean {
+    return !!this.location?.building // building is the only required field should a location be required
+  }
+}
+
+export class CalendarSession extends Session<ICalendarSession> {
+  date: Date
+  duration: number
+  cancel: {
+    init: Date
+  }
+  rawTime: {
+    start: string
+    end: string
+  }
+  startTime: string
+  endTime: string
+
+  constructor(session: ICalendarSession) {
+    super(session)
+    this.date = new Date(session.date)
+    this.duration = session.duration;
+    this.cancel = {
+      init: new Date(session.initCancel)
+    }
+    this.rawTime = this.getRawTime()
+    var { start, end } = this.getFriendlyTimes()
+    this.startTime = start;
+    this.endTime = end
+
+  }
+  private getRawTime(): typeof this.rawTime {
+    var end = new Date(this.date.getTime());
+    var msDur = this.duration * 60000
+    end.setTime(end.getTime() + msDur)
+    return {
+      start: build24Time(this.date),
+      end: build24Time(end)
+    }
+  }
+  private getFriendlyTimes(): typeof this.rawTime {
+    var end = new Date(this.date.getTime());
+    var msDur = this.duration * 60000
+    end.setTime(end.getTime() + msDur)
+    return {
+      start: localeTimeString(this.date),
+      end: localeTimeString(end)
+    }
+  }
+  isCancelled(): boolean {
+    var now = new Date();
+    return now.toLocaleDateString() === this.cancel.init.toLocaleDateString()
   }
 }
 

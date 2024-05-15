@@ -29,12 +29,7 @@ export interface IScheduledSession extends ISession {
 }
 
 export interface ICalendarSession extends ISession {
-  startTime: string,
-  endTime: string,
-  course: string[] | string,
-  temp: {
-    startDate: Date,
-    endDate: Date
-  }
+  date: Date, // timecode
+  duration: number, //minutes
   type: "calendars"
 }

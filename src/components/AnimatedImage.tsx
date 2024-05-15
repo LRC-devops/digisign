@@ -9,7 +9,7 @@ const AnimatedImage = ({ src, componentProps }: Props) => {
     <motion.img
       initial={{ opacity: 0, x: 10 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.4, duration: 0.3 }}
+      transition={{ delay: 0.4, duration: 0.8 }}
       src={src}
       {...componentProps} />
   </AnimatePresence>
