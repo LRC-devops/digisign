@@ -6,6 +6,7 @@ import { getSessions } from './api/sessions'
 import { ICalendarSession, ISession } from './components/sessions/types'
 import { ComponentError } from './components/error/types'
 import { CalendarSession, ScheduledSession, isScheduledSession } from './components/sessions/session.model'
+import { isDiffV2 } from './utils/stateDiff'
 /*
   * TODO:
   * Top Widgets:
@@ -47,15 +48,22 @@ function App() {
     const getData = async () => {
       try {
         console.log("refetching data...")
-        setLoading(true);
+        // if there are sessions displayed no need to show loading spinner
+        if (sessions.length < 1) {
+          setLoading(true);
+        }
         const res = await getSessions();
         if (res instanceof Error) {
           throw res;
         }
-
+        if (isDiffV2(sessions, res)) {
+          console.log("diff")
+          let _sessions = await initalizeSessionClasses(res);
+          setSessions(_sessions)
+        } else {
+          console.log("no diff")
+        }
         // call session.initalize
-        let _sessions = await initalizeSessionClasses(res);
-        setSessions(_sessions)
         setLoading(false)
       } catch (err) {
         setLoading(false)
@@ -63,9 +71,22 @@ function App() {
         setError({ hasError: true, msg: error.message || "An unknown error occurred" })
       }
     }
-    getData()
 
-  }, [])
+    if (sessions.length < 1) {
+      console.log("getting initial data")
+      getData()
+    }
+
+    // const interval = setInterval(async () => {
+    //   console.log("revalidaing")
+    //   await getData();
+    // }, 150000)
+    //
+    // return () => {
+    //   clearInterval(interval)
+    // }
+
+  }, [sessions])
 
   return (
     <main className="flex w-[100vw] h-[100vh] p-10 bg-[url('/bg.jpg')]">

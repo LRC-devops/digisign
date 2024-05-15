@@ -3,7 +3,7 @@ import { ComponentError } from "../error/types";
 import LoadingSpinner from "../LoadingSpinner";
 import SessionCard from "./SessionCard";
 import ErrorBoundary from "../error/ErrorBoundary";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import ProgressBars from "../pages/ProgressBars";
 import { CalendarSession, ScheduledSession } from "./session.model";
 
@@ -11,7 +11,9 @@ interface State {
   sessions: (ScheduledSession | CalendarSession)[][];
   curr: number;
 }
-type Action = { type: 'next' }
+type Action =
+  | { type: 'next' }
+  | { type: 'setSessions', payload: (ScheduledSession | CalendarSession)[] }
 
 
 const reducer = (state: State, action: Action) => {
@@ -21,6 +23,8 @@ const reducer = (state: State, action: Action) => {
       return {
         ...state, curr: curr
       }
+    case "setSessions":
+      return { ...state, sessions: action.payload }
   }
 }
 
@@ -51,14 +55,19 @@ type Props = {
   error: ComponentError,
   loading: boolean
 }
+const initialState: State = {
+  sessions: [],
+  curr: 0,
+}
 const SessionsWidget = ({ sessions, error, loading }: Props) => {
-  const initialState: State = {
-    sessions: formatSessionsPages(sessions),
-    curr: 0,
-  }
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  console.log(state)
+  useEffect(() => {
+    console.log("updaing sessions and rerendering")
+    dispatch({ type: 'setSessions', payload: formatSessionsPages(sessions) })
+  }, [sessions])
+
+  console.log("sessions rerendered", state)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,6 +86,9 @@ const SessionsWidget = ({ sessions, error, loading }: Props) => {
   if (error.hasError) {
     throw new Error(error.msg || "An unknown error occurred")
   }
+  if (state.sessions.length < 1) {
+    return <h3>Notion to see here...</h3>
+  }
   if (loading) {
     return <LoadingSpinner loading={loading} />
   }
@@ -94,7 +106,7 @@ const SessionsWidget = ({ sessions, error, loading }: Props) => {
       <div className="w-full h-full flex flex-wrap justify-between gap-3">
         {state.sessions[state.curr].map((s: (CalendarSession | ScheduledSession), idx: number) => (
           <AnimatePresence key={idx}>
-            <SessionCard session={s} key={idx} />
+            <SessionCard delay={idx / 10} session={s} key={idx} />
           </AnimatePresence>
         ))}
       </div>

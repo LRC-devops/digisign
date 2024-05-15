@@ -5,7 +5,7 @@ import CardTop from "./CardTop";
 import CardDetails from "./CardDetails";
 
 type Props = {
-  session: ScheduledSession
+  session: ScheduledSession,
 }
 const ScheduledSessionCard = ({ session }: Props) => {
   // appears in the top left to notify students of potential warning like different location, cancellations, or temporary updates

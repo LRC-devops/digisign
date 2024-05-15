@@ -15,6 +15,8 @@ export interface ISession {
   initCancel: Date,
   revertCancel: Date,
   docId: string
+  updatedAt?: string
+  createdAt: string
 }
 
 export interface IScheduledSession extends ISession {

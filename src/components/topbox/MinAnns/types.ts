@@ -6,5 +6,8 @@ export type MinimizedAnnouncement = {
   image: string,
   subheads: string[]
   details: string[]
+  docId: string
+  updatedAt?: string
+  createdAt: string
 
 }
