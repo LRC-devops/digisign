@@ -5,6 +5,25 @@ import { ReactElement } from "react"
 import { FaComputer } from "react-icons/fa6"
 import { motion } from "framer-motion"
 
+type StatusProps = {
+  session: ScheduledSession | CalendarSession
+}
+
+const CardStatus = ({ session }: StatusProps) => {
+  var baseClass = "w-10 h-2 rounded-lg mb-3 "
+  let statusClass = baseClass;
+  if (session.isCancelled()) {
+    statusClass += "bg-cancel-500"
+  } else if (session instanceof ScheduledSession && session.isTemp()) {
+    statusClass += "bg-temp-500"
+  } else if (session.mode === "zoom") {
+    statusClass += "bg-green-500"
+  } else {
+    statusClass += "bg-gold-500"
+  }
+
+  return <div className={statusClass}></div>
+}
 type Props = {
   session: ScheduledSession | CalendarSession
 }
@@ -25,6 +44,7 @@ const Box = ({ children, addClasses, idx }: BoxProps) => {
 const CardDetails = ({ session }: Props) => {
   return <BottomGradient>
     <>
+      <CardStatus session={session} />
       <Box idx={0} addClasses="text-white/75">
         <>
           <FaClock />
@@ -71,5 +91,6 @@ const CardDetails = ({ session }: Props) => {
   </BottomGradient>
 
 }
+
 
 export default CardDetails

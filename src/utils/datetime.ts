@@ -53,7 +53,7 @@ export const getTime = (date: Date): string => {
 }
 export const formatTimeString = (time: string): string => {
   let [h, m] = time.split(':');
-  if (+m < 10) {
+  if (m.length < 2) {
     m = `0${m}`
   }
   if (+h <= 12) {
@@ -79,6 +79,7 @@ export const buildDate = (time24: string): Date => {
   date.setMinutes(+minutes)
   return date;
 }
+
 export const localeTimeString = (date: Date): string => {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
@@ -86,5 +87,3 @@ export const build24Time = (date: Date) => {
   return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: '2-digit' })
   // const [hours, mins] = localeTimeString(date).split(":");
 }
-
-build24Time(new Date())

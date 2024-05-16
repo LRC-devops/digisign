@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import { buildDate } from "../../utils/datetime";
 import { CalendarSession, ScheduledSession } from "./session.model";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Props = {
   session: ScheduledSession | CalendarSession
+  delay: number
 }
 
 
 const getBGClass = (session: ScheduledSession | CalendarSession) => {
-  var baseStr = "w-full h-6"
+  var baseStr = "w-full h-6 relative "
   if (session.isCancelled()) {
     return baseStr + " bg-cancel-900"
   }
@@ -38,7 +40,7 @@ const getFGClass = (session: ScheduledSession | CalendarSession) => {
   return baseStr + " bg-gold-500"
 }
 
-const SessionProgress = ({ session }: Props) => {
+const SessionProgress = ({ session, delay }: Props) => {
   const { start, end } = session.rawTime
   const [progress, setProgress] = useState<number>(100)
   const [pre, setPre] = useState({ isPre: false, timeUntil: 0 });
@@ -74,11 +76,41 @@ const SessionProgress = ({ session }: Props) => {
     </div >
   }
 
+  const runnerAnimation = {
+    hidden: { x: "-100%" },
+    visible: () => {
+      console.log("running animation")
+      return {
+        x: "100%",
+        transition: {
+          repeat: Infinity,
+          duration: 1,
+          repeatDelay: 5,
+          delay: delay * 1.5
+        }
+      }
+    }
+  }
+
   return <div
     className={getBGClass(session)}>
-    {pre.isPre && <p className="ml-5">Starts in {pre.timeUntil}{pre.timeUntil === 1 ? "min" : "mins"}</p>}
-    <div style={{ transform: `translate(-${progress}%)` }} className={getFGClass(session)}>
-    </div>
+
+    {pre.isPre &&
+      <div className="w-full h-full flex items-center">
+        <p className="ml-5">Starts in <span className="font-bold">{pre.timeUntil}{pre.timeUntil === 1 ? "min" : "mins"}</span>
+        </p>
+      </div>
+    }
+    <motion.div
+      variants={runnerAnimation}
+      initial="hidden"
+      animate="visible"
+      className="top-0 left-0 bottom-0 right-0 bg-white/20 absolute">
+    </motion.div>
+    <AnimatePresence>
+      <motion.div initial={{ x: "-100%" }} animate={{ x: `-${progress}%` }} transition={{ ease: "easeInOut", duration: 1 }} style={{ transform: `translate(-${progress}%)` }} className={getFGClass(session)}>
+      </motion.div>
+    </AnimatePresence>
   </div >
 }
 

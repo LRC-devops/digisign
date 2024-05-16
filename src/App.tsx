@@ -7,6 +7,7 @@ import { ICalendarSession, ISession } from './components/sessions/types'
 import { ComponentError } from './components/error/types'
 import { CalendarSession, ScheduledSession, isScheduledSession } from './components/sessions/session.model'
 import { isDiffV2 } from './utils/stateDiff'
+import ErrorBoundary from './components/error/ErrorBoundary'
 /*
   * TODO:
   * Top Widgets:
@@ -84,13 +85,15 @@ function App() {
 
   }, [sessions])
 
+
+
   return (
     <main className="flex w-[100vw] h-[100vh] p-10 bg-[url('/bg.jpg')]">
       <div className='flex flex-col justify-between align-middle w-full h-full z-0'>
         <TopBox />
-        {sessions.length > 0 &&
+        <ErrorBoundary>
           <SessionsWidget sessions={sessions} error={error} loading={loading} />
-        }
+        </ErrorBoundary>
       </div>
     </main>
   )

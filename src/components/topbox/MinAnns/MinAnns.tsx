@@ -5,6 +5,7 @@ import { MinimizedAnnouncement } from "./types";
 import { ComponentError } from "../../error/types";
 import ProgressBars from "../../pages/ProgressBars";
 import { isDiff } from "../../../utils/stateDiff";
+import LoadingSpinner from "../../LoadingSpinner";
 
 
 interface State {
@@ -50,6 +51,7 @@ const initialState: State = {
 
 const MinAnns = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ComponentError>({ hasError: false, msg: null });
 
 
@@ -57,6 +59,9 @@ const MinAnns = () => {
   useEffect(() => {
     const getAnnouncements = async () => {
       try {
+        if (state.announcements.length < 1) {
+          setLoading(true)
+        }
         const res: MinimizedAnnouncement[] | Error = await getMinAnns();
         if (res instanceof Error) {
           throw res;
@@ -66,7 +71,9 @@ const MinAnns = () => {
         if (isDiff(state.announcements, res)) {
           dispatch({ type: "setAnnouncements", payload: res })
         }
+        setLoading(false)
       } catch (err) {
+        setLoading(false)
         const error = err as Error;
         setError({ hasError: true, msg: error.message })
         console.error("[MinAnns]: error fetching announcements: ", err);
@@ -88,9 +95,6 @@ const MinAnns = () => {
     }
   }, [state.announcements, state.counter])
 
-  if (error.hasError) {
-    throw new Error(error.msg || "Unknown error occurred")
-  }
   useEffect(() => {
     if (state.announcements.length < 1) {
       return
@@ -104,6 +108,9 @@ const MinAnns = () => {
     }
   }, [state.duration, state.announcements])
 
+  if (loading) {
+    return <LoadingSpinner loading={loading} />
+  }
   if (error.hasError) {
     throw new Error(error.msg || "Unknown error occurred")
   }

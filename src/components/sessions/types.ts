@@ -1,4 +1,5 @@
 import { UPPhoto } from "../../api/photo"
+import { CalendarSession, ScheduledSession } from "./session.model"
 
 export interface ISession {
   subject: string,
@@ -36,3 +37,5 @@ export interface ICalendarSession extends ISession {
   duration: number, //minutes
   type: "calendars"
 }
+
+export type Sessions = (ScheduledSession | CalendarSession)[]

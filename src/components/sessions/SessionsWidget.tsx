@@ -59,6 +59,9 @@ const initialState: State = {
   curr: 0,
 }
 const SessionsWidget = ({ sessions, error, loading }: Props) => {
+  if (error.hasError) {
+    throw new Error(error.msg || "An unknown error occurred")
+  }
   const [state, dispatch] = useReducer(reducer, initialState)
   const DURATION = 10000
 
@@ -68,32 +71,31 @@ const SessionsWidget = ({ sessions, error, loading }: Props) => {
 
 
   useEffect(() => {
-    const init = setTimeout(() => {
+    if (state.sessions.length >= 1) {
+      console.log("interval condition passed: init interval")
       var interval = setInterval(() => {
-        if (state.sessions.length > 1) {
-          dispatch({ type: "next" })
-        }
-        return () => {
-          clearInterval(interval)
-        }
+        console.log("running interval")
+        console.log("dispatch: next")
+        dispatch({ type: "next" })
       }, DURATION)
-    }, DURATION)
 
-    return () => {
-      clearTimeout(init)
+    } else {
+      console.log("Interval condition did not pass: ", state)
     }
-  }, [])
+    return () => {
+      console.log("clearing interval")
+      clearInterval(interval)
+    }
+  }, [sessions, state.sessions.length])
 
 
-
-  if (error.hasError) {
-    throw new Error(error.msg || "An unknown error occurred")
+  if (loading) {
+    return <div className="w-full h-full flex items-center justify-center">
+      <LoadingSpinner loading={loading} />
+    </div>
   }
   if (state.sessions.length < 1) {
     return <h3>Notion to see here...</h3>
-  }
-  if (loading) {
-    return <LoadingSpinner loading={loading} />
   }
 
 

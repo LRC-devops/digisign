@@ -11,7 +11,7 @@ const SessionCard = (props: Props) => {
 
 
   return <CardContainer delay={props.delay}>
-    {props.session instanceof ScheduledSession ? <ScheduledSessionCard key={props.session.docId} session={props.session} /> : <CalendarSessionCard key={props.session.docId} session={props.session} />}
+    {props.session instanceof ScheduledSession ? <ScheduledSessionCard delay={props.delay} key={props.session.docId} session={props.session} /> : <CalendarSessionCard delay={props.delay} key={props.session.docId} session={props.session} />}
   </CardContainer>
 }
 

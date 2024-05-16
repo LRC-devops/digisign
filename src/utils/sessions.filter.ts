@@ -2,8 +2,29 @@ import { isScheduledSession } from "../components/sessions/session.model";
 import { ICalendarSession, IScheduledSession } from "../components/sessions/types";
 import { buildDate } from "./datetime";
 
-export const filterSessionsWithinHour = (sessions: IScheduledSession[] | ICalendarSession[]) => {
-  return sessions.filter((s) => {
+type RawSessions = (ICalendarSession | IScheduledSession)[]
+type RawSession = ICalendarSession | IScheduledSession
+
+const sortSessions = (sessions: RawSessions): void => {
+  sessions.sort((a, b) => {
+    let aStart, bStart: Date;
+    if (isScheduledSession(a)) {
+      aStart = buildDate(a.startTime);
+    } else {
+      aStart = new Date(a.date)
+    }
+    if (isScheduledSession(b)) {
+      bStart = buildDate(b.startTime)
+    } else {
+      bStart = new Date(b.date)
+    }
+    return aStart.getTime() - bStart.getTime()
+  })
+}
+
+export const filterSessionsWithinHour = (sessions: RawSessions) => {
+  sortSessions(sessions);
+  return sessions.filter((s: RawSession) => {
     if (isScheduledSession(s)) {
       return isScheduledSessionWithinHour(s)
     }
