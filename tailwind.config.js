@@ -29,6 +29,12 @@ export default {
         "cancel-900": "#992900",
         "temp-500": "#ffa726",
         "temp-900": "#996417",
+      },
+      keyframes: {
+        pan: {
+          from: { transform: 'translateX(-100)' },
+          to: { transform: 'translateX(100)' }
+        }
       }
     },
   },

@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+/* @keyframes pan { */
+/*   from { */
+/*     transform: translate(100, 0); */
+/*   } */
+/*   to { */
+/*     transform: translate(-100, 0) */
+/*   } */
+/* } */

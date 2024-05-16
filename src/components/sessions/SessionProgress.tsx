@@ -79,7 +79,6 @@ const SessionProgress = ({ session, delay }: Props) => {
   const runnerAnimation = {
     hidden: { x: "-100%" },
     visible: () => {
-      console.log("running animation")
       return {
         x: "100%",
         transition: {

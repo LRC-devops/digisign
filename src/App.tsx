@@ -8,22 +8,9 @@ import { ComponentError } from './components/error/types'
 import { CalendarSession, ScheduledSession, isScheduledSession } from './components/sessions/session.model'
 import { isDiffV2 } from './utils/stateDiff'
 import ErrorBoundary from './components/error/ErrorBoundary'
-/*
-  * TODO:
-  * Top Widgets:
-  *   Time
-  *   Min Anns
-  *   Hours
-  * Main:
-  *   Sessions
-  *   Max Announcements
-  * Authentication
-  * Cacheing
-  *
-  * BUG:
-  * need to test cacheing with chromecast!! May be a major reason to switch to raspberrypi
-  * Also should research tradeoffs for using the mem card with raspberrypi vs using ext storage (more viable for long term?)
-*/
+import { getConfig } from './api/maxanns'
+import { Config } from './components/MaxAnns/types'
+import MaxAnns from './components/MaxAnns/MaxAnns'
 
 const initalizeSessionClasses = async (sessions: ISession[]): Promise<(ScheduledSession | CalendarSession)[]> => {
   let out = [];
@@ -43,10 +30,14 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [sessions, setSessions] = useState<(ScheduledSession | CalendarSession)[]>([])
   const [error, setError] = useState<ComponentError>({ hasError: false, msg: "" })
+  const [config, setConfig] = useState<Config | null>(null)
+  const [runAnns, setRunAnns] = useState(true)
 
   // GET SESSIONS
   useEffect(() => {
+    console.log("running useEffect")
     const getData = async () => {
+      console.log("getting session data")
       try {
         // if there are sessions displayed no need to show loading spinner
         if (sessions.length < 1) {
@@ -59,7 +50,9 @@ function App() {
         if (isDiffV2(sessions, res)) {
           let _sessions = await initalizeSessionClasses(res);
           setSessions(_sessions)
-        } else {
+        }
+        if (sessions.length < 1) {
+          setRunAnns(true)
         }
         // call session.initalize
         setLoading(false)
@@ -70,31 +63,55 @@ function App() {
       }
     }
 
+    const fetchConfig = async () => {
+      console.log("getting config data")
+      try {
+        setLoading(true);
+        const res = await getConfig()
+        setLoading(false)
+        if (res instanceof Error) {
+          throw res;
+        }
+        const config: Config = {
+          ...res,
+          totalPages: Math.ceil(res.count / 3),
+          currentPage: 1
+        }
+        setConfig(config)
+      } catch (err) {
+        setLoading(false)
+        const error = err as Error;
+        setError({ hasError: true, msg: error.message || "An unknown error occurred" })
+      }
+    }
+
     if (sessions.length < 1) {
       getData()
     }
-
-    // NOTE: while the interval works, I will use MaxAnns to revalidate when they're running
-    // const interval = setInterval(async () => {
-    //   await getData();
-    // }, 150000)
-    //
-    // return () => {
-    //   clearInterval(interval)
-    // }
-
+    if (runAnns) {
+      getData();
+    }
+    fetchConfig()
   }, [sessions])
 
 
 
   return (
-    <main className="flex w-[100vw] h-[100vh] p-10 bg-[url('/bg.jpg')]">
-      <div className='flex flex-col justify-between align-middle w-full h-full z-0'>
-        <TopBox />
+    <main className="flex w-[100vw] h-[100vh] bg-[url('/bg.jpg')]">
+      {runAnns ?
         <ErrorBoundary>
-          <SessionsWidget sessions={sessions} error={error} loading={loading} />
+          <MaxAnns running={runAnns} setRunning={setRunAnns} config={config} />
         </ErrorBoundary>
-      </div>
+        :
+        <>
+          <div className='flex flex-col p-10 justify-between align-middle w-full h-full z-0'>
+            <TopBox />
+          </div>
+          <ErrorBoundary>
+            <SessionsWidget sessions={sessions} error={error} loading={loading} />
+          </ErrorBoundary>
+        </>
+      }
     </main>
   )
 }

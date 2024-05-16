@@ -72,18 +72,13 @@ const SessionsWidget = ({ sessions, error, loading }: Props) => {
 
   useEffect(() => {
     if (state.sessions.length >= 1) {
-      console.log("interval condition passed: init interval")
       var interval = setInterval(() => {
-        console.log("running interval")
-        console.log("dispatch: next")
         dispatch({ type: "next" })
       }, DURATION)
 
     } else {
-      console.log("Interval condition did not pass: ", state)
     }
     return () => {
-      console.log("clearing interval")
       clearInterval(interval)
     }
   }, [sessions, state.sessions.length])
