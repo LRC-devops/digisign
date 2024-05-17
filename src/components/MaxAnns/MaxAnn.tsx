@@ -2,6 +2,7 @@ import { useState } from "react"
 import { MaxAnn as IMaxAnn } from "./types"
 import { motion } from "framer-motion"
 import LoadingSpinner from "../LoadingSpinner"
+import BottomGradient from "../sessions/BottomGradient"
 
 type Props = {
   a: IMaxAnn
@@ -38,15 +39,19 @@ const MaxAnn = ({ a }: Props) => {
       animate={animation.animate}
       transition={animation.transition}
       exit={animation.initial}
-      className="w-full h-full">
+      className={`w-full h-full overflow-hidden relative`}>
       <motion.img
-        // initial={{ x: 100, scale: 1.5 }}
-        // animate={{ x: -100 }}
-        // transition={{ duration: a.duration / 1000, ease: "easeInOut" }}
-        // onLoad={() => {
-        //   console.log("img ready")
-        // }}
-        className="w-full h-full object-cover animate-[pan_10s_ease-in-out_infinite]" src={a.image.src} crossOrigin="anonymous" />
+        style={{ animation: `pan ${a.duration / 1000}s ease-in-out infinite` }}
+        className={`w-full h-full object-cover`} src={a.image.src} crossOrigin="anonymous" />
+      <div className="absolute z-5 text-white bottom-0 left-0 right-0">
+        <BottomGradient>
+          <div className="p-2 mb-5">
+            <h1 className="text-8xl font-light mb-3">{a.heading}</h1>
+            <h2 className="text-5xl">{a.subhead}</h2>
+            <p className="text-2xl">{a.paragraph}</p>
+          </div>
+        </BottomGradient>
+      </div>
     </motion.div>
   }
 

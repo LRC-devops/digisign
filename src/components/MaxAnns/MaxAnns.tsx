@@ -6,6 +6,22 @@ import ProgressBars from "../pages/ProgressBars"
 import MaxAnn from "./MaxAnn"
 import { AnimatePresence, motion } from "framer-motion"
 
+const image = new Image();
+image.src = "https://images.unsplash.com/photo-1715546658746-27b1f6eb2b21?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+
+
+
+const testAnn: IMaxAnn = {
+  imageUrl: "https://images.unsplash.com/photo-1715546658746-27b1f6eb2b21?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  heading: "Hello World!",
+  disableAnimation: false,
+  paragraph: "Just testing the not pre-designed maximum announcements",
+  subhead: "Development Test",
+  duration: 30000,
+  name: "test",
+  image: image
+}
+
 type Props = {
   running: boolean
   setRunning: (running: boolean) => void
@@ -75,7 +91,7 @@ const sectionAnnouncements = (anns: IMaxAnn[]): { anns: IMaxAnn[][], totalPages:
 
 const MaxAnns = ({ config, running, setRunning }: Props) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, currentPage: 1 || 0, totalPages: config?.totalPages || 0 })
-  // const [error, setError] = useState<ComponentError>({ hasError: false, msg: null })
+  const [error, setError] = useState<ComponentError>({ hasError: false, msg: null })
   // const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -98,7 +114,7 @@ const MaxAnns = ({ config, running, setRunning }: Props) => {
         // setLoading(true)
         const error = err as Error;
         console.error("maximized announcement error:", err)
-        // setError({ hasError: true, msg: error.message || "Unknown error" })
+        setError({ hasError: true, msg: error.message || "Unknown error" })
       }
     }
 
@@ -122,6 +138,9 @@ const MaxAnns = ({ config, running, setRunning }: Props) => {
   //   console.log("error")
   //   throw new Error(error.msg || "An unknown error occurred.")
   // }
+  if (error.hasError) {
+    setRunning(false);
+  }
   if (state.announcements.length < 1) {
     // setRunning(false); // should enable this for production
     console.log("no announcements to run...")
@@ -139,7 +158,7 @@ const MaxAnns = ({ config, running, setRunning }: Props) => {
     }
   }
 
-  return <div className="w-full h-full">
+  return <div className="w-full h-full overflow-hidden">
     <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/50 via-black/10 to-black/0 z-10">
       <div className="w-full h-full p-5">
         <ProgressBars
@@ -157,9 +176,10 @@ const MaxAnns = ({ config, running, setRunning }: Props) => {
       // transition={animation.transition}
       // exit={animation.initial}
       >
-        <MaxAnn
-          key={state.announcements[state.currentPage][state.curr].name}
-          a={state.announcements[state.currentPage][state.curr]} />
+        {/* <MaxAnn */}
+        {/*   key={state.announcements[state.currentPage][state.curr].name} */}
+        {/*   a={state.announcements[state.currentPage][state.curr]} /> */}
+        <MaxAnn a={testAnn} />
       </motion.div>
     </AnimatePresence>
   </div>
