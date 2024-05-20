@@ -25,6 +25,8 @@ export default {
         "green-300": '#a7d9ab',
         "green-200": '#b2ddb6',
         "green-100": '#bde2c0',
+        "cancel-100": "#ff8f66",
+        "cancel-200": "#ff7d4d",
         "cancel-500": "#ff4500",
         "cancel-900": "#992900",
         "temp-500": "#ffa726",

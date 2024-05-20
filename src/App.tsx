@@ -1,115 +1,103 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import SessionsWidget from './components/sessions/SessionsWidget'
 import TopBox from './components/topbox/TopBox'
 import './index.css'
-import { getSessions } from './api/sessions'
-import { ICalendarSession, ISession } from './components/sessions/types'
-import { ComponentError } from './components/error/types'
-import { CalendarSession, ScheduledSession, isScheduledSession } from './components/sessions/session.model'
-import { isDiffV2 } from './utils/stateDiff'
 import ErrorBoundary from './components/error/ErrorBoundary'
-import { getConfig } from './api/maxanns'
-import { Config } from './components/MaxAnns/types'
 import MaxAnns from './components/MaxAnns/MaxAnns'
+import SnackBar from './components/SnackBar'
+import { fetchAnnouncements, fetchConfig, fetchSessions } from './utils/app.utils'
+import { initialState, reducer } from './app.reducer'
 
-const initalizeSessionClasses = async (sessions: ISession[]): Promise<(ScheduledSession | CalendarSession)[]> => {
-  let out = [];
-  for (let s of sessions) {
-    let session = null;
-    if (isScheduledSession(s)) {
-      session = new ScheduledSession(s);
-    } else {
-      session = new CalendarSession(s as ICalendarSession)
-    }
-    await session.initalize();
-    out.push(session);
-  }
-  return out;
-}
 function App() {
-  const [loading, setLoading] = useState(false)
-  const [sessions, setSessions] = useState<(ScheduledSession | CalendarSession)[]>([])
-  const [error, setError] = useState<ComponentError>({ hasError: false, msg: "" })
-  const [config, setConfig] = useState<Config | null>(null)
-  const [runAnns, setRunAnns] = useState(true)
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-  // GET SESSIONS
+  // GET ALL DATA
   useEffect(() => {
     console.log("running useEffect")
-    const getData = async () => {
-      console.log("getting session data")
-      try {
-        // if there are sessions displayed no need to show loading spinner
-        if (sessions.length < 1) {
-          setLoading(true);
+    const getAllData = async () => {
+      dispatch({ type: "setLoading", payload: true })
+      if (state.config.running) {
+        const _sessions = await fetchSessions(state.sessions)
+        if (_sessions instanceof Error) {
+          dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
         }
-        const res = await getSessions();
-        if (res instanceof Error) {
-          throw res;
-        }
-        if (isDiffV2(sessions, res)) {
-          let _sessions = await initalizeSessionClasses(res);
-          setSessions(_sessions)
-        }
-        if (sessions.length < 1) {
-          setRunAnns(true)
-        }
-        // call session.initalize
-        setLoading(false)
-      } catch (err) {
-        setLoading(false)
-        const error = err as Error;
-        setError({ hasError: true, msg: error.message || "An unknown error occurred" })
       }
+      if (state.sessions.length < 1) {
+        const _sessions = await fetchSessions(state.sessions)
+        if (_sessions instanceof Error) {
+          dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
+        } else if (_sessions) {
+          dispatch({ type: "setSessions", payload: _sessions })
+        }
+      }
+      const _config = await fetchConfig()
+      if (_config instanceof Error) {
+        return dispatch({ type: "setError", payload: { hasError: true, msg: _config.message } })
+      }
+      const _announcements = await fetchAnnouncements()
+      if (_announcements instanceof Error) {
+        return dispatch({ type: "setError", payload: { hasError: true, msg: _announcements.message } })
+      }
+      dispatch({ type: "setAnnouncements", payload: _announcements.announcements })
+      dispatch({
+        type: "setConfig", payload: {
+          ..._config, runtimes: _announcements.runtimes
+        }
+      })
+      dispatch({ type: "setLoading", payload: false })
     }
 
-    const fetchConfig = async () => {
-      console.log("getting config data")
-      try {
-        setLoading(true);
-        const res = await getConfig()
-        setLoading(false)
-        if (res instanceof Error) {
-          throw res;
-        }
-        const config: Config = {
-          ...res,
-          totalPages: Math.ceil(res.count / 3),
-          currentPage: 1
-        }
-        setConfig(config)
-      } catch (err) {
-        setLoading(false)
-        const error = err as Error;
-        setError({ hasError: true, msg: error.message || "An unknown error occurred" })
-      }
-    }
+    getAllData()
+  }, [state.sessions])
 
-    if (sessions.length < 1) {
-      getData()
+  // announcements 
+  useEffect(() => {
+    if (!state.config) {
+      return;
     }
-    if (runAnns) {
-      getData();
+    var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000);
+    const announcementInterval = setInterval(async () => {
+      console.log("setting runAnnouncements true")
+      if (state.announcements.length > 1 && state.config) {
+        // NOTE: shoud I group these together? update the page right before? 
+        dispatch({ type: "setAnnouncementsRunning", payload: true })
+        dispatch({ type: "nextAnnPage" })
+      }
+    }, duration)
+    // }, (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000)) // dev timing
+    const snackbarInterval = setInterval(() => {
+      dispatch({ type: "setSnack", payload: { heading: "Announcements starting soon...", body: "Don't worry, the sessions will return shortly.", duration: 8000, open: true, isError: false } })
+    }, duration - 9000)
+
+    return () => {
+      clearInterval(announcementInterval)
+      clearInterval(snackbarInterval)
     }
-    fetchConfig()
-  }, [sessions])
+  }, [state.config])
 
 
 
   return (
     <main className="flex w-[100vw] h-[100vh] bg-[url('/bg.jpg')]">
-      {runAnns ?
+      {state.config.running || state.sessions.length < 1 ?
         <ErrorBoundary>
-          <MaxAnns running={runAnns} setRunning={setRunAnns} config={config} />
+          {state.config && state.announcements.length > 0 &&
+            <MaxAnns
+              running={state.config.running}
+              setRunning={(running: boolean) => dispatch({ type: "setAnnouncementsRunning", payload: running })}
+              config={state.config}
+              announcements={state.announcements[state.config.currentPage]} />
+          }
         </ErrorBoundary>
         :
         <>
           <div className='flex flex-col p-10 justify-between align-middle w-full h-full z-0'>
             <TopBox />
+            <ErrorBoundary>
+              <SessionsWidget sessions={state.sessions} error={state.error} loading={state.loading} />
+            </ErrorBoundary>
+            <SnackBar {...state.snack} />
           </div>
-          <ErrorBoundary>
-            <SessionsWidget sessions={sessions} error={error} loading={loading} />
-          </ErrorBoundary>
         </>
       }
     </main>

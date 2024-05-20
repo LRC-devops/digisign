@@ -30,6 +30,7 @@ a:hover {
 
 body, html, main {
   font-family: 'Inter', sans-serif;
+  overflow: hidden;
 }
 
 body {

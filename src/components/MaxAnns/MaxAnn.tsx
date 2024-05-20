@@ -1,7 +1,5 @@
-import { useState } from "react"
 import { MaxAnn as IMaxAnn } from "./types"
 import { motion } from "framer-motion"
-import LoadingSpinner from "../LoadingSpinner"
 import BottomGradient from "../sessions/BottomGradient"
 
 type Props = {
@@ -20,6 +18,7 @@ const animation = {
   }
 }
 const MaxAnn = ({ a }: Props) => {
+  const pan = `pan ${(a.duration / 1000) + 5}s ease-in-out 1`
   if (a.disableAnimation) {
     return <motion.div
       initial={animation.initial}
@@ -28,9 +27,6 @@ const MaxAnn = ({ a }: Props) => {
       exit={animation.initial}
       className="w-full h-full">
       <img
-        onLoad={() => {
-          console.log("img ready")
-        }}
         className="w-full h-full object-cover" src={a.image.src} crossOrigin="anonymous" />
     </motion.div>
   } else {
@@ -39,10 +35,10 @@ const MaxAnn = ({ a }: Props) => {
       animate={animation.animate}
       transition={animation.transition}
       exit={animation.initial}
-      className={`w-full h-full overflow-hidden relative`}>
+      className={`w-full h-full overflow-hidden`}>
       <motion.img
-        style={{ animation: `pan ${a.duration / 1000}s ease-in-out infinite` }}
-        className={`w-full h-full object-cover`} src={a.image.src} crossOrigin="anonymous" />
+        style={{ animation: pan }}
+        className={`w-full h-full`} src={a.image.src} crossOrigin="anonymous" />
       <div className="absolute z-5 text-white bottom-0 left-0 right-0">
         <BottomGradient>
           <div className="p-2 mb-5">

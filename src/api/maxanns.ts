@@ -6,7 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 export const getConfig = async (): Promise<Config | Error> => {
   try {
     const res = await axios.get(`${API_BASE_URL}/announcements/maximized/run-time`);
-    return res.data;
+    return { ...res.data, interval: res.data.config.interval }
   } catch (err) {
     console.error("[api/maxanns/getConfig]: error: ", err)
     const error = err as Error

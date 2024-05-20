@@ -1,64 +1,59 @@
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer } from "react"
 import { Config, MaxAnn as IMaxAnn } from "./types"
-import { ComponentError } from "../error/types"
-import { getAnnouncements } from "../../api/maxanns"
 import ProgressBars from "../pages/ProgressBars"
 import MaxAnn from "./MaxAnn"
-import { AnimatePresence, motion } from "framer-motion"
+import { motion } from "framer-motion"
 
-const image = new Image();
-image.src = "https://images.unsplash.com/photo-1715546658746-27b1f6eb2b21?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-
-
-
-const testAnn: IMaxAnn = {
-  imageUrl: "https://images.unsplash.com/photo-1715546658746-27b1f6eb2b21?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  heading: "Hello World!",
-  disableAnimation: false,
-  paragraph: "Just testing the not pre-designed maximum announcements",
-  subhead: "Development Test",
-  duration: 30000,
-  name: "test",
-  image: image
-}
 
 type Props = {
   running: boolean
   setRunning: (running: boolean) => void
-  config: Config | null
+  config: Config
+  announcements: IMaxAnn[]
 }
 
 type State = {
   curr: number,
+  next: number,
   dur: number,
-  announcements: IMaxAnn[][]
+  announcements: IMaxAnn[]
   currentPage: number,
   totalPages: number
 }
 
+type NextAction = { type: "next", payload: { setRunning: (running: boolean) => void } }
 type Action =
-  | { type: "next" }
-  | { type: "setAnnouncements", payload: { anns: IMaxAnn[][], totalPages: number } }
-// | { type: "nextPage" }
+  | NextAction
+  // | { type: "setAnnouncements", payload: { anns: IMaxAnn[][], totalPages: number } }
+  | { type: "reset" }
+  | { type: "setConfig", payload: Config }
+
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
-      var curr = (state.curr + 1) % state.announcements[state.currentPage].length
-      var dur = state.announcements[state.currentPage][curr].duration + 1000 // plus animation offset
+      var curr = (state.curr + 1) % state.announcements.length
+      var next = (curr + 1) % state.announcements.length
+      var dur = state.announcements[curr].duration + 1000 // plus animation offset
+      return {
+        ...state, curr, dur, next
+      }
+    // case 'setAnnouncements':
+    //   var { anns, totalPages } = action.payload
+    //   return {
+    //     ...state, announcements: anns, totalPages
+    //   }
+    case 'reset':
+      var curr = 0;
+      var next = 0;
+      var dur = state.announcements[curr].duration + 1000 // plus animation offset
       return {
         ...state, curr, dur
       }
-    case 'setAnnouncements':
-      var { anns, totalPages } = action.payload
+    case 'setConfig':
       return {
-        ...state, announcements: anns, totalPages
+        ...state, currentPage: action.payload.currentPage
       }
-    // case 'nextPage':
-    //   var curr = (state.totalPages % 1) + 1
-    //   return {
-    //     ...state, currentPage: curr, curr: 0
-    //   }
   }
 }
 
@@ -67,122 +62,100 @@ const initialState: State = {
   dur: 12000,
   announcements: [],
   currentPage: 0,
-  totalPages: 0
+  totalPages: 0,
+  next: 1,
 }
 
-const sectionAnnouncements = (anns: IMaxAnn[]): { anns: IMaxAnn[][], totalPages: number } => {
-  const out = [];
-  var page = [];
-  const PAGE_SIZE = 3; // NOTE: maybe make this part of the config?
-  let count = 0;
-  for (let a of anns) {
-    if (page.length >= PAGE_SIZE) {
-      out.push(page);
-      count = 0;
-      page = [];
-    }
-    page.push(a)
-  }
-  if (page.length > 0) {
-    out.push(page);
-  }
-  return { anns: out, totalPages: out.length };
-}
+const MaxAnns = ({ config, setRunning, announcements }: Props) => {
+  const [state, dispatch] = useReducer(reducer, { ...initialState, announcements, currentPage: config.currentPage, totalPages: config.totalPages })
+  console.log("[maxanns]: mounting with state: ", state)
 
-const MaxAnns = ({ config, running, setRunning }: Props) => {
-  const [state, dispatch] = useReducer(reducer, { ...initialState, currentPage: 1 || 0, totalPages: config?.totalPages || 0 })
-  const [error, setError] = useState<ComponentError>({ hasError: false, msg: null })
-  // const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        // setLoading(true)
-        const res = await getAnnouncements();
-        if (res instanceof Error) {
-          throw res;
-        }
-        for (let a of res) {
-          var img = new Image();
-          img.src = a.imageUrl;
-          img.crossOrigin = "anonymous"
-          a.image = img
-        }
-        dispatch({ type: "setAnnouncements", payload: sectionAnnouncements(res) })
-        // setLoading(true)
-      } catch (err) {
-        // setLoading(true)
-        const error = err as Error;
-        console.error("maximized announcement error:", err)
-        setError({ hasError: true, msg: error.message || "Unknown error" })
-      }
+    if (!config) {
+      return;
     }
+    dispatch({ type: "setConfig", payload: config })
+  }, [config])
 
-    fetchAnnouncements();
-  }, [])
+
+  // useEffect(() => {
+  //   const fetchAnnouncements = async () => {
+  //     try {
+  //       // setLoading(true)
+  //       const res = await getAnnouncements();
+  //       if (res instanceof Error) {
+  //         throw res;
+  //       }
+  //       for (let a of res) {
+  //         var img = new Image();
+  //         img.src = a.imageUrl;
+  //         img.crossOrigin = "anonymous"
+  //         a.image = img
+  //       }
+  //       // const sectionedAnnouncements = sectionAnnouncements(res);
+  //       // const runtimes = sectionedAnnouncements.anns.map((a: IMaxAnn[]) => {
+  //       //   var pageDuration = a.reduce((acc: number, a: IMaxAnn) => acc + a.duration, 0)
+  //       //   return pageDuration
+  //       // })
+  //       dispatch({ type: "setAnnouncements", payload: sectionAnnouncements(res) })
+  //     } catch (err) {
+  //       const error = err as Error;
+  //       console.error("maximized announcement error:", err)
+  //       setError({ hasError: true, msg: error.message || "Unknown error" })
+  //     }
+  //   }
+  //
+  //   fetchAnnouncements();
+  // }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
-      dispatch({ type: "next" })
+      if (state.next === 0) {
+        console.log("[maxanns]: resetting")
+        dispatch({ type: "reset" })
+        console.log("[maxanns]: stopping")
+        return setRunning(false)
+      } else {
+        var action: NextAction = { type: "next", payload: { setRunning } }
+        dispatch(action)
+      }
     }, state.dur)
 
     return () => {
       clearInterval(interval)
     }
-  }, [state.dur])
+  }, [state])
 
 
-
-  // TODO: Once the snackbar (notifications like "announcements starting soon...") is built will send errors there.
-  // if (error.hasError) {
-  //   console.log("error")
-  //   throw new Error(error.msg || "An unknown error occurred.")
-  // }
-  if (error.hasError) {
-    setRunning(false);
-  }
   if (state.announcements.length < 1) {
-    // setRunning(false); // should enable this for production
     console.log("no announcements to run...")
     return <></>
   }
-  const animation = {
-    initial: {
-      opacity: 0
-    },
-    animate: {
-      opacity: 1
-    },
-    transition: {
-      duration: 1,
-    }
-  }
+  console.log("[maxanns]: config: ", config, "state: ", state)
 
-  return <div className="w-full h-full overflow-hidden">
+  return <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    key="announcements"
+    className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden">
     <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/50 via-black/10 to-black/0 z-10">
       <div className="w-full h-full p-5">
         <ProgressBars
           currentIdx={state.curr}
-          bars={state.announcements[state.currentPage].map(a => a.duration)}
+          bars={state.announcements.map(a => a.duration)}
         />
       </div>
     </div>
-    <AnimatePresence>
-      <motion.div
-        className="overflow-hidden"
-      // layout
-      // initial={animation.initial}
-      // animate={animation.animate}
-      // transition={animation.transition}
-      // exit={animation.initial}
-      >
-        {/* <MaxAnn */}
-        {/*   key={state.announcements[state.currentPage][state.curr].name} */}
-        {/*   a={state.announcements[state.currentPage][state.curr]} /> */}
-        <MaxAnn a={testAnn} />
-      </motion.div>
-    </AnimatePresence>
-  </div>
+    <motion.div
+      className="overflow-hidden"
+    >
+      <MaxAnn
+        key={state.announcements[state.curr].name}
+        a={state.announcements[state.curr]} />
+    </motion.div>
+  </motion.div>
 }
 
 export default MaxAnns
