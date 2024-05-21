@@ -44,7 +44,6 @@ export const reducer = (state: State, action: Action): State => {
       if (!action.payload) {
         curr = (curr + 1) % state.config.totalPages;
       }
-      console.log("running setAnnouncementsRunning to: ", action.payload, curr)
       var config = {
         ...state.config,
         running: action.payload,

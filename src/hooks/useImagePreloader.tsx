@@ -22,7 +22,6 @@ export default function useImagePreloader(imageList: string[]) {
     let isCancelled = false;
 
     async function effect() {
-      console.log("PRELOADED");
 
       if (isCancelled) {
         return;

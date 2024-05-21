@@ -8,7 +8,6 @@ import { State, } from './app.reducer'
 import useDigisign from './hooks/useDigisign'
 
 const hasSessions = (state: State) => {
-  console.log(state.sessions.length >= 1)
   return state.sessions.length >= 1;
 }
 function App() {
@@ -24,7 +23,6 @@ function App() {
               setRunning={hasSessions(state) ? (running: boolean) => {
                 return dispatch({ type: "setAnnouncementsRunning", payload: running })
               } : () => { }}
-              // config={hasSessions(state) ? state.config : { ...state.config, totalPages: 1, count: state.rawAnnouncements.length, }}
               announcements={hasSessions(state) ? state.announcements[state.config.currentPage] : state.rawAnnouncements} />
           }
         </ErrorBoundary>

@@ -74,7 +74,6 @@ const MaxAnns = ({ setRunning, announcements }: Props) => {
 
 
   if (state.announcements.length < 1) {
-    console.log("no announcements to run...")
     return <></>
   }
 

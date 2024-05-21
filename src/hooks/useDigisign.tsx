@@ -48,7 +48,6 @@ export default function useDigisign() {
 
   useEffect(() => {
     const revalidate = setInterval(async () => {
-      console.log("revalidating session data")
       const _sessions = await fetchSessions(state.sessions)
       if (_sessions instanceof Error) {
         dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
@@ -64,7 +63,6 @@ export default function useDigisign() {
   // announcements 
   useEffect(() => {
     if (!state.config || state.sessions.length < 1) {
-      console.log("early announcements interval return due to no config or no sessions")
       return;
     }
     var snack = {
@@ -83,16 +81,13 @@ export default function useDigisign() {
     }
     // var duration = 60000 + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000)// dev timing
     var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000); // prod timing
-    console.log("[App]: Announcements Interval Duration: ", duration)
     var snackAnimationOffset = 5000
     let announcementTimeout: ReturnType<typeof setTimeout>;
     var snackTimeout = setTimeout(async () => {
       if (state.announcements.length > 1 && state.config) {
 
-        console.log("setting snack")
         dispatch({ type: "setSnack", payload: snack })
         announcementTimeout = setTimeout(async () => {
-          console.log("running announcements")
           dispatch({ type: "setAnnouncementsRunning", payload: true })
           dispatch({ type: "setSnack", payload: resetSnack })
         }, snack.duration + snackAnimationOffset)
@@ -100,7 +95,6 @@ export default function useDigisign() {
     }, duration - snack.duration + snackAnimationOffset)
 
     return () => {
-      console.log("[useDigisign]: clearing announcements interval")
       clearTimeout(snackTimeout)
       clearTimeout(announcementTimeout)
     }
