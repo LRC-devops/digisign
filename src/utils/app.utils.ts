@@ -20,14 +20,7 @@ const initalizeSessionClasses = async (sessions: ISession[]): Promise<Sessions> 
   }
   return out;
 }
-// type SetError = (error: ComponentError) => void
-// type FetchSessionsProps = {
-//   setSessions: (sessions: Sessions) => void
-//   setError: SetError
-//   sessions: Sessions
-// }
 export const fetchSessions = async (sessions: Sessions): Promise<Sessions | Error | null> => {
-  console.log("getting session data")
   try {
     // if there are sessions displayed no need to show loading spinner
     const res = await getSessions();
@@ -46,12 +39,7 @@ export const fetchSessions = async (sessions: Sessions): Promise<Sessions | Erro
   }
 }
 
-// type FetchConfigProps = {
-//   setConfig: (config: Config) => void
-//   setError: SetError
-// }
 export const fetchConfig = async (): Promise<Config | Error> => {
-  console.log("getting config data")
   try {
     const res = await getConfig()
     if (res instanceof Error) {
@@ -66,7 +54,6 @@ export const fetchConfig = async (): Promise<Config | Error> => {
 
   } catch (err) {
     const error = err as Error;
-    // setError({ hasError: true, msg: error.message || "An unknown error occurred" })
     return error;
   }
 }

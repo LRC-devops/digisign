@@ -18,7 +18,7 @@ const animation = {
   }
 }
 const MaxAnn = ({ a }: Props) => {
-  const pan = `pan ${(a.duration / 1000) + 5}s ease-in-out 1`
+  const pan = `pan ${(a.duration / 1000) + 5}s ease-in-out infinite`
   if (a.disableAnimation) {
     return <motion.div
       initial={animation.initial}

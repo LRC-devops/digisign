@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import BottomGradient from "./sessions/BottomGradient"
+import { useEffect, useState } from "react"
 
 type Props = {
   duration: number,
@@ -10,9 +11,20 @@ type Props = {
 }
 const SnackBar = (props: Props) => {
   const { heading, body, isError } = props
+  const [open, setOpen] = useState(props.open)
+
+  useEffect(() => {
+    console.log("[SnackBar]: running useEffect, setting open to: ", props.open)
+    setOpen(props.open)
+    setTimeout(() => {
+      console.log("[SnackBar]: timeout: setting open to: ", false)
+      setOpen(false) // close snackbar after props.duration
+    }, props.duration)
+
+  }, [props.open, props.duration])
 
   return <AnimatePresence>
-    {props.open &&
+    {open &&
       <motion.div
         initial={{ opacity: 0, y: "100%" }}
         animate={{ opacity: 1, y: 0 }}

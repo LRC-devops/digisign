@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react"
-import { Config, MaxAnn as IMaxAnn } from "./types"
+import { MaxAnn as IMaxAnn } from "./types"
 import ProgressBars from "../pages/ProgressBars"
 import MaxAnn from "./MaxAnn"
 import { motion } from "framer-motion"
@@ -8,7 +8,6 @@ import { motion } from "framer-motion"
 type Props = {
   running: boolean
   setRunning: (running: boolean) => void
-  config: Config
   announcements: IMaxAnn[]
 }
 
@@ -17,37 +16,33 @@ type State = {
   next: number,
   dur: number,
   announcements: IMaxAnn[]
-  currentPage: number,
-  totalPages: number
 }
 
 type NextAction = { type: "next", payload: { setRunning: (running: boolean) => void } }
 type Action =
   | NextAction
   | { type: "reset" }
-// | { type: "setConfig", payload: Config }
 
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
+      if (state.next === 0) {
+        return state;
+      }
       var curr = (state.curr + 1) % state.announcements.length
       var next = (curr + 1) % state.announcements.length
       var dur = state.announcements[curr].duration + 1000 // plus animation offset
       return {
-        ...state, curr, dur, next
+        ...state, curr, next
       }
     case 'reset':
       var curr = 0;
       var next = 0;
       var dur = state.announcements[curr].duration + 1000 // plus animation offset
       return {
-        ...state, curr, dur
+        ...state, curr, dur, next
       }
-    // case 'setConfig':
-    //   return {
-    //     ...state, currentPage: action.payload.currentPage
-    //   }
   }
 }
 
@@ -55,30 +50,16 @@ const initialState: State = {
   curr: 0,
   dur: 12000,
   announcements: [],
-  currentPage: 0,
-  totalPages: 0,
   next: 1,
 }
 
-const MaxAnns = ({ config, setRunning, announcements }: Props) => {
-  const [state, dispatch] = useReducer(reducer, { ...initialState, announcements, currentPage: config.currentPage, totalPages: config.totalPages })
-  console.log("[maxanns]: mounting with state: ", state)
-
-
-  // useEffect(() => {
-  //   if (!config) {
-  //     return;
-  //   }
-  //   dispatch({ type: "setConfig", payload: config })
-  // }, [config])
-
+const MaxAnns = ({ setRunning, announcements }: Props) => {
+  const [state, dispatch] = useReducer(reducer, { ...initialState, announcements })
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (state.next === 0) {
-        console.log("[maxanns]: resetting")
         dispatch({ type: "reset" })
-        console.log("[maxanns]: stopping")
         return setRunning(false)
       } else {
         var action: NextAction = { type: "next", payload: { setRunning } }
@@ -96,7 +77,6 @@ const MaxAnns = ({ config, setRunning, announcements }: Props) => {
     console.log("no announcements to run...")
     return <></>
   }
-  console.log("[maxanns]: config: ", config, "state: ", state)
 
   return <motion.div
     initial={{ opacity: 0 }}
