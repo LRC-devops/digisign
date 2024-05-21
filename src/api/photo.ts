@@ -16,9 +16,11 @@ type UPRes = {
   }
 }
 
-export const getUPPhoto = async (query: string): Promise<UPPhoto | Error> => {
+export const getUPPhoto = async (query: string, token: string): Promise<UPPhoto | Error> => {
   try {
-    const res = await axios.get(`${API_BASE_URL}/photo/${query}`);
+    const res = await axios.get(`${API_BASE_URL}/photo/${query}`, {
+      headers: { Authorization: 'Barer ' + token },
+    });
     const data: UPRes = res.data;
     if (!data.urls) {
       return {

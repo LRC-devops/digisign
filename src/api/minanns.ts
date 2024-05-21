@@ -3,9 +3,11 @@ import { MinimizedAnnouncement } from "../components/topbox/MinAnns/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-export const getMinAnns = async (): Promise<MinimizedAnnouncement[] | Error> => {
+export const getMinAnns = async (token: string): Promise<MinimizedAnnouncement[] | Error> => {
   try {
-    const res = await axios.get(`${API_BASE_URL}/announcements/minimized`);
+    const res = await axios.get(`${API_BASE_URL}/announcements/minimized`, {
+      headers: { Authorization: 'Barer ' + token },
+    });
     return res.data
   } catch (err) {
     console.error("[api/minanns/getMinAnns]: error: ", err)

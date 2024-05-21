@@ -3,15 +3,14 @@ import DateTime from "./DateTime"
 import MinAnns from "./MinAnns/MinAnns"
 import Hours from "./hours/Hours"
 
-const TopBox = () => {
-  // return <div className="grid grid-cols-[repeat(4,_minmax(0,_1fr))] gap-10 overflow-hidden min-w-0 min-h-0">
+const TopBox = (props: { token: string }) => {
   return <div className="flex justify-between gap-10 min-w-0 min-h-0 max-h-[18vh] h-[18vh]">
     <DateTime />
     <ErrorBoundary>
-      <MinAnns />
+      <MinAnns token={props.token} />
     </ErrorBoundary>
     <ErrorBoundary>
-      <Hours />
+      <Hours token={props.token} />
     </ErrorBoundary>
   </div>
 }

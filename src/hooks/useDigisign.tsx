@@ -6,32 +6,33 @@ import { fetchAnnouncements, fetchConfig, fetchSessions } from "../utils/app.uti
  * NOTE: main logic for App.tsx
  */
 
-export default function useDigisign() {
+export default function useDigisign(token: string) {
   const [state, dispatch] = useReducer(reducer, initialState)
+  // const { token } = useAuth()
 
   // GET ALL DATA
   useEffect(() => {
     const getAllData = async () => {
       dispatch({ type: "setLoading", payload: true })
       if (state.config.running) {
-        const _sessions = await fetchSessions(state.sessions)
+        const _sessions = await fetchSessions(state.sessions, token)
         if (_sessions instanceof Error) {
           dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
         }
       }
       if (state.sessions.length < 1) {
-        const _sessions = await fetchSessions(state.sessions)
+        const _sessions = await fetchSessions(state.sessions, token)
         if (_sessions instanceof Error) {
           dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
         } else if (_sessions) {
           dispatch({ type: "setSessions", payload: _sessions })
         }
       }
-      const _config = await fetchConfig()
+      const _config = await fetchConfig(token)
       if (_config instanceof Error) {
         return dispatch({ type: "setError", payload: { hasError: true, msg: _config.message } })
       }
-      const _announcements = await fetchAnnouncements()
+      const _announcements = await fetchAnnouncements(token)
       if (_announcements instanceof Error) {
         return dispatch({ type: "setError", payload: { hasError: true, msg: _announcements.message } })
       }
@@ -48,7 +49,7 @@ export default function useDigisign() {
 
   useEffect(() => {
     const revalidate = setInterval(async () => {
-      const _sessions = await fetchSessions(state.sessions)
+      const _sessions = await fetchSessions(state.sessions, token)
       if (_sessions instanceof Error) {
         dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
       } else if (_sessions) {
