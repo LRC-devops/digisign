@@ -6,8 +6,12 @@ import ErrorBoundary from './components/error/ErrorBoundary'
 import MaxAnns from './components/MaxAnns/MaxAnns'
 import SnackBar from './components/SnackBar'
 import { fetchAnnouncements, fetchConfig, fetchSessions } from './utils/app.utils'
-import { initialState, reducer } from './app.reducer'
+import { State, initialState, reducer } from './app.reducer'
 
+const hasSessions = (state: State) => {
+  console.log(state.sessions.length >= 1)
+  return state.sessions.length >= 1;
+}
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -38,7 +42,7 @@ function App() {
       if (_announcements instanceof Error) {
         return dispatch({ type: "setError", payload: { hasError: true, msg: _announcements.message } })
       }
-      dispatch({ type: "setAnnouncements", payload: _announcements.announcements })
+      dispatch({ type: "setAnnouncements", payload: { announcements: _announcements.announcements, rawAnnouncements: _announcements.rawAnnouncements } })
       dispatch({
         type: "setConfig", payload: {
           ..._config, runtimes: _announcements.runtimes
@@ -46,32 +50,49 @@ function App() {
       })
       dispatch({ type: "setLoading", payload: false })
     }
-
     getAllData()
+  }, [state.sessions])
+
+  useEffect(() => {
+    const revalidate = setInterval(async () => {
+      console.log("revalidating session data")
+      const _sessions = await fetchSessions(state.sessions)
+      if (_sessions instanceof Error) {
+        dispatch({ type: "setError", payload: { hasError: true, msg: _sessions.message } })
+      } else if (_sessions) {
+        dispatch({ type: "setSessions", payload: _sessions })
+      }
+    }, 120000) // revalidate sessions every 2 mins (shouldn't be an issue with the way the server will cache this data.)
+    return () => {
+      clearInterval(revalidate)
+    }
   }, [state.sessions])
 
   // announcements 
   useEffect(() => {
-    if (!state.config) {
+    if (!state.config || state.sessions.length < 1) {
+      console.log("early announcements interval return due to no config or no sessions")
       return;
     }
-    var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000);
-    const announcementInterval = setInterval(async () => {
-      console.log("setting runAnnouncements true")
+    var snack = { heading: "Announcements starting soon...", body: "Don't worry, the sessions will return shortly.", duration: 8000, open: true, isError: false }
+    var duration = state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000// dev timing
+    // var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000); // prod timing
+    var announcementInterval = setInterval(async () => {
+      let announcementTimeout = setTimeout(() => { })
       if (state.announcements.length > 1 && state.config) {
-        // NOTE: shoud I group these together? update the page right before? 
-        dispatch({ type: "setAnnouncementsRunning", payload: true })
-        dispatch({ type: "nextAnnPage" })
+
+        dispatch({ type: "setSnack", payload: snack })
+        announcementTimeout = setTimeout(async () => {
+          dispatch({ type: "setAnnouncementsRunning", payload: true })
+        }, snack.duration + 1000)
       }
-    }, duration)
-    // }, (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000)) // dev timing
-    const snackbarInterval = setInterval(() => {
-      dispatch({ type: "setSnack", payload: { heading: "Announcements starting soon...", body: "Don't worry, the sessions will return shortly.", duration: 8000, open: true, isError: false } })
-    }, duration - 9000)
+      return () => {
+        clearTimeout(announcementTimeout)
+      }
+    }, duration - snack.duration + 1000)
 
     return () => {
       clearInterval(announcementInterval)
-      clearInterval(snackbarInterval)
     }
   }, [state.config])
 
@@ -83,10 +104,10 @@ function App() {
         <ErrorBoundary>
           {state.config && state.announcements.length > 0 &&
             <MaxAnns
-              running={state.config.running}
-              setRunning={(running: boolean) => dispatch({ type: "setAnnouncementsRunning", payload: running })}
-              config={state.config}
-              announcements={state.announcements[state.config.currentPage]} />
+              running={hasSessions(state) ? state.config.running : true}
+              setRunning={hasSessions(state) ? () => (running: boolean) => dispatch({ type: "setAnnouncementsRunning", payload: running }) : () => { }}
+              config={hasSessions(state) ? state.config : { ...state.config, totalPages: 1, count: state.rawAnnouncements.length, }}
+              announcements={hasSessions(state) ? state.announcements[state.config.currentPage] : state.rawAnnouncements} />
           }
         </ErrorBoundary>
         :

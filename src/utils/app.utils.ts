@@ -72,7 +72,7 @@ export const fetchConfig = async (): Promise<Config | Error> => {
 }
 
 
-export const fetchAnnouncements = async (): Promise<{ runtimes: number[], announcements: IMaxAnn[][] } | Error> => {
+export const fetchAnnouncements = async (): Promise<{ runtimes: number[], announcements: IMaxAnn[][], rawAnnouncements: IMaxAnn[] } | Error> => {
   try {
     const res = await getAnnouncements();
     if (res instanceof Error) {
@@ -89,7 +89,7 @@ export const fetchAnnouncements = async (): Promise<{ runtimes: number[], announ
       var pageDuration = a.reduce((acc: number, a: IMaxAnn) => acc + a.duration, 0)
       return pageDuration
     })
-    return { runtimes, announcements: sectionedAnnouncements.anns }
+    return { runtimes, announcements: sectionedAnnouncements.anns, rawAnnouncements: res }
   } catch (err) {
     const error = err as Error;
     console.error("maximized announcement error:", err)

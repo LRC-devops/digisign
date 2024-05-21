@@ -24,9 +24,8 @@ type State = {
 type NextAction = { type: "next", payload: { setRunning: (running: boolean) => void } }
 type Action =
   | NextAction
-  // | { type: "setAnnouncements", payload: { anns: IMaxAnn[][], totalPages: number } }
   | { type: "reset" }
-  | { type: "setConfig", payload: Config }
+// | { type: "setConfig", payload: Config }
 
 
 const reducer = (state: State, action: Action): State => {
@@ -38,11 +37,6 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state, curr, dur, next
       }
-    // case 'setAnnouncements':
-    //   var { anns, totalPages } = action.payload
-    //   return {
-    //     ...state, announcements: anns, totalPages
-    //   }
     case 'reset':
       var curr = 0;
       var next = 0;
@@ -50,10 +44,10 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state, curr, dur
       }
-    case 'setConfig':
-      return {
-        ...state, currentPage: action.payload.currentPage
-      }
+    // case 'setConfig':
+    //   return {
+    //     ...state, currentPage: action.payload.currentPage
+    //   }
   }
 }
 
@@ -71,43 +65,13 @@ const MaxAnns = ({ config, setRunning, announcements }: Props) => {
   console.log("[maxanns]: mounting with state: ", state)
 
 
-  useEffect(() => {
-    if (!config) {
-      return;
-    }
-    dispatch({ type: "setConfig", payload: config })
-  }, [config])
-
-
   // useEffect(() => {
-  //   const fetchAnnouncements = async () => {
-  //     try {
-  //       // setLoading(true)
-  //       const res = await getAnnouncements();
-  //       if (res instanceof Error) {
-  //         throw res;
-  //       }
-  //       for (let a of res) {
-  //         var img = new Image();
-  //         img.src = a.imageUrl;
-  //         img.crossOrigin = "anonymous"
-  //         a.image = img
-  //       }
-  //       // const sectionedAnnouncements = sectionAnnouncements(res);
-  //       // const runtimes = sectionedAnnouncements.anns.map((a: IMaxAnn[]) => {
-  //       //   var pageDuration = a.reduce((acc: number, a: IMaxAnn) => acc + a.duration, 0)
-  //       //   return pageDuration
-  //       // })
-  //       dispatch({ type: "setAnnouncements", payload: sectionAnnouncements(res) })
-  //     } catch (err) {
-  //       const error = err as Error;
-  //       console.error("maximized announcement error:", err)
-  //       setError({ hasError: true, msg: error.message || "Unknown error" })
-  //     }
+  //   if (!config) {
+  //     return;
   //   }
-  //
-  //   fetchAnnouncements();
-  // }, [])
+  //   dispatch({ type: "setConfig", payload: config })
+  // }, [config])
+
 
   useEffect(() => {
     const interval = setInterval(() => {
