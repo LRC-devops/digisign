@@ -32,7 +32,6 @@ export const getAuthState = async (token: string): Promise<AuthState | Error> =>
       headers: { Authorization: 'Barer ' + token },
     });
     const authState = res.data.state;
-    console.log("[getAuthState]: res: ", res.data)
     return authState;
   } catch (err) {
     if (err instanceof AxiosError && err?.response?.status === 403) {

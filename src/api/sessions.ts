@@ -3,7 +3,6 @@ import { filterSessionsWithinHour } from "../utils/sessions.filter";
 import API_BASE_URL from "./api-url";
 
 export const getSessions = async (token: string) => {
-  console.log(API_BASE_URL)
   try {
     const res = await axios.get(`${API_BASE_URL}/sessions/`, {
       headers: { Authorization: 'Barer ' + token },

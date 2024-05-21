@@ -5,7 +5,6 @@ const NotAuthenticated = () => {
   if (isAuth) {
     return <></>
   }
-  console.log("not auth: error: ", error)
 
   return <div className="w-full h-full p-10">
     <h2 className="text-3xl text-green-500 mb-5">{name}</h2>
