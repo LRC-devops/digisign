@@ -67,12 +67,26 @@ export default function useDigisign() {
       console.log("early announcements interval return due to no config or no sessions")
       return;
     }
-    var snack = { heading: "Announcements starting soon...", body: "Don't worry, the sessions will return shortly.", duration: 8000, open: true, isError: false }
-    // var duration = state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000// dev timing
+    var snack = {
+      heading: "Announcements starting soon...",
+      body: "Don't worry, the sessions will return shortly.",
+      duration: 8000,
+      open: true,
+      isError: false
+    }
+    var resetSnack = {
+      heading: "",
+      body: "",
+      duration: 0,
+      open: false,
+      isError: false
+    }
+    // var duration = 60000 + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000)// dev timing
     var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000); // prod timing
+    console.log("[App]: Announcements Interval Duration: ", duration)
     var snackAnimationOffset = 5000
-    var announcementInterval = setInterval(async () => {
-      let announcementTimeout = setTimeout(() => { })
+    let announcementTimeout: ReturnType<typeof setTimeout>;
+    var snackTimeout = setTimeout(async () => {
       if (state.announcements.length > 1 && state.config) {
 
         console.log("setting snack")
@@ -80,17 +94,17 @@ export default function useDigisign() {
         announcementTimeout = setTimeout(async () => {
           console.log("running announcements")
           dispatch({ type: "setAnnouncementsRunning", payload: true })
+          dispatch({ type: "setSnack", payload: resetSnack })
         }, snack.duration + snackAnimationOffset)
-      }
-      return () => {
-        clearTimeout(announcementTimeout)
       }
     }, duration - snack.duration + snackAnimationOffset)
 
     return () => {
-      clearInterval(announcementInterval)
+      console.log("[useDigisign]: clearing announcements interval")
+      clearTimeout(snackTimeout)
+      clearTimeout(announcementTimeout)
     }
-  }, [state.config])
+  }, [state.config, state.sessions, state.announcements])
 
   return { state, dispatch }
 }

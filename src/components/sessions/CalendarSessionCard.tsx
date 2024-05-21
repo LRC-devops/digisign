@@ -6,6 +6,7 @@ import CardDetails from "./CardDetails";
 
 type Props = {
   session: CalendarSession
+  delay: number
 }
 const CalendarSessionCard = (props: Props) => {
   const { session } = props
@@ -19,7 +20,7 @@ const CalendarSessionCard = (props: Props) => {
     <BGPhoto session={session} />
     <CardTop session={session} />
     <CardDetails session={session} />
-    <SessionProgress session={session} />
+    <SessionProgress session={session} delay={props.delay} />
 
   </>
 }
