@@ -1,7 +1,7 @@
 import axios from "axios"
 import { MinimizedAnnouncement } from "../components/topbox/MinAnns/types";
+import API_BASE_URL from "./api-url";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getMinAnns = async (token: string): Promise<MinimizedAnnouncement[] | Error> => {
   try {

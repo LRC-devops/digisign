@@ -3,11 +3,16 @@ import MainView from './components/MainView'
 import useAuth from './hooks/useAuth'
 import NotAuthenticated from './components/auth/NotAuthenticated'
 import ErrorBoundary from './components/error/ErrorBoundary'
+import LoadingSpinner from './components/LoadingSpinner'
 
 function App() {
-  const { isAuth, token } = useAuth()
+  const { isAuth, token, loading } = useAuth()
 
-  if (!isAuth || !token || token.length < 1) {
+  if (loading) {
+    return <LoadingSpinner loading={loading} />
+  }
+
+  if (!isAuth) {
     return <ErrorBoundary>
       <NotAuthenticated />
     </ErrorBoundary>

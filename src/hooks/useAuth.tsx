@@ -9,6 +9,7 @@ const useAuth = () => {
   const [error, setError] = useState<ComponentError>({ hasError: false, msg: "" })
   const [isAuth, setIsAuth] = useState(false)
   const [name, setName] = useState("")
+  const [loading, setLoading] = useState(true)
   // NOTE: may need a way to reinit this hook once call storeToken
 
   const generateUuid = (): string => {
@@ -41,42 +42,47 @@ const useAuth = () => {
       setUuid(storedUuid)
     }
   }, [])
+  const fetchToken = async (uuid: string) => {
+    setLoading(true)
+    // var storedToken = getItem("token")
+    // if (!storedToken) {
+    var token = await getToken(uuid)
+    if (token instanceof Error) {
+      return setError({ hasError: true, msg: token.message || "An unknown error occurred" })
+    }
+    storeItem("token", token)
+    setToken(token)
+    setLoading(false)
+    // } else {
+    //   setToken(storedToken)
+    // }
+  }
   // get token
   useEffect(() => {
     if (!uuid) {
       return;
     }
-    const fetchToken = async () => {
-      var storedToken = getItem("token")
-      if (!storedToken) {
-        var token = await getToken(uuid)
-        if (token instanceof Error) {
-          return setError({ hasError: true, msg: token.message || "An unknown error occurred" })
-        }
-        storeItem("token", token)
-        setToken(token)
-      } else {
-        setToken(storedToken)
-      }
-    }
-    fetchToken()
+    fetchToken(uuid)
   }, [uuid])
   useEffect(() => {
-    if (!token) {
+    if (!token || !uuid) {
       return;
     }
     const fetchAuthState = async () => {
+      setLoading(true)
+      await fetchToken(uuid)
       var authState = await getAuthState(token)
       if (authState instanceof Error) {
         return setError({ hasError: true, msg: authState.message || "An unknown error occurred" })
       }
       setIsAuth(authState.isAuth)
       setName(authState.name)
+      setLoading(false)
     }
     fetchAuthState()
-  }, [token])
+  }, [token, uuid])
 
-  return { token, uuid, error, isAuth, name }
+  return { token, uuid, error, isAuth, name, loading }
 }
 
 export default useAuth; 

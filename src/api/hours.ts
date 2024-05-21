@@ -1,7 +1,6 @@
 import axios from "axios"
 import { THour } from "../components/topbox/hours/types";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import API_BASE_URL from "./api-url";
 
 export const getHours = async (token: string): Promise<THour[] | Error> => {
   try {

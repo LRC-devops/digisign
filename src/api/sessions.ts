@@ -1,14 +1,16 @@
 import axios from "axios"
 import { filterSessionsWithinHour } from "../utils/sessions.filter";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-
+import API_BASE_URL from "./api-url";
 
 export const getSessions = async (token: string) => {
+  console.log(API_BASE_URL)
   try {
     const res = await axios.get(`${API_BASE_URL}/sessions/`, {
       headers: { Authorization: 'Barer ' + token },
     });
+    if (res.data.length < 1) {
+      throw new Error("No sessions found...")
+    }
     return filterSessionsWithinHour(res.data);
   } catch (err) {
     const error = err as Error;

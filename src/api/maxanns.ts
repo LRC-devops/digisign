@@ -1,7 +1,7 @@
 import axios from "axios"
 import { Config, MaxAnn } from "../components/MaxAnns/types";
+import API_BASE_URL from "./api-url";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getConfig = async (token: string): Promise<Config | Error> => {
   try {
