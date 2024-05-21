@@ -38,11 +38,11 @@ export abstract class Session<T extends ISession> {
 
   }
 
-  async initalize(): Promise<void> {
+  async initalize(token: string): Promise<void> {
     if (this.photo) {
       return;
     }
-    const res = await getUPPhoto(this.subject);
+    const res = await getUPPhoto(this.subject, token);
     if (res instanceof Error) {
       throw res;
     }

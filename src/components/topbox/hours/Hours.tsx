@@ -5,7 +5,7 @@ import LoadingSpinner from "../../LoadingSpinner";
 import Hour from "./Hour";
 import { ComponentError } from "../../error/types";
 
-const Hours = () => {
+const Hours = ({ token }: { token: string }) => {
   const [data, setData] = useState<THour[] | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ComponentError>({ hasError: false, msg: null })
@@ -14,7 +14,7 @@ const Hours = () => {
     const getData = async () => {
       try {
         setLoading(true)
-        const data: THour[] | Error = await getHours();
+        const data: THour[] | Error = await getHours(token);
 
         if (data instanceof Error) {
           throw data;
@@ -36,7 +36,6 @@ const Hours = () => {
   if (error.hasError) {
     throw new Error(error.msg || "Unknown error occurred")
   }
-
 
   if (!data || loading) {
     return <LoadingSpinner loading={true} />

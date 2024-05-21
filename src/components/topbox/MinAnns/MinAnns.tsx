@@ -49,7 +49,7 @@ const initialState: State = {
 }
 
 
-const MinAnns = () => {
+const MinAnns = ({ token }: { token: string }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ComponentError>({ hasError: false, msg: null });
@@ -62,7 +62,7 @@ const MinAnns = () => {
         if (state.announcements.length < 1) {
           setLoading(true)
         }
-        const res: MinimizedAnnouncement[] | Error = await getMinAnns();
+        const res: MinimizedAnnouncement[] | Error = await getMinAnns(token);
         if (res instanceof Error) {
           throw res;
         }
@@ -108,11 +108,11 @@ const MinAnns = () => {
     }
   }, [state.duration, state.announcements])
 
-  if (loading) {
-    return <LoadingSpinner loading={loading} />
-  }
   if (error.hasError) {
     throw new Error(error.msg || "Unknown error occurred")
+  }
+  if (loading) {
+    return <LoadingSpinner loading={loading} />
   }
   if (state.announcements.length < 1) {
     return <h3>Nothing to see here...</h3>

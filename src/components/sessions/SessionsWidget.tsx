@@ -1,6 +1,5 @@
 import { useEffect, useReducer } from "react";
 import { ComponentError } from "../error/types";
-import LoadingSpinner from "../LoadingSpinner";
 import SessionCard from "./SessionCard";
 import ErrorBoundary from "../error/ErrorBoundary";
 import { AnimatePresence } from "framer-motion";
@@ -58,7 +57,7 @@ const initialState: State = {
   sessions: [],
   curr: 0,
 }
-const SessionsWidget = ({ sessions, error, loading }: Props) => {
+const SessionsWidget = ({ sessions, error }: Props) => {
   if (error.hasError) {
     throw new Error(error.msg || "An unknown error occurred")
   }
@@ -75,8 +74,6 @@ const SessionsWidget = ({ sessions, error, loading }: Props) => {
       var interval = setInterval(() => {
         dispatch({ type: "next" })
       }, DURATION)
-
-    } else {
     }
     return () => {
       clearInterval(interval)
@@ -84,11 +81,6 @@ const SessionsWidget = ({ sessions, error, loading }: Props) => {
   }, [sessions, state.sessions.length])
 
 
-  if (loading) {
-    return <div className="w-full h-full flex items-center justify-center">
-      <LoadingSpinner loading={loading} />
-    </div>
-  }
   if (state.sessions.length < 1) {
     return <h3>Notion to see here...</h3>
   }

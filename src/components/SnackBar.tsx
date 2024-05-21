@@ -14,10 +14,8 @@ const SnackBar = (props: Props) => {
   const [open, setOpen] = useState(props.open)
 
   useEffect(() => {
-    console.log("[SnackBar]: running useEffect, setting open to: ", props.open)
     setOpen(props.open)
     setTimeout(() => {
-      console.log("[SnackBar]: timeout: setting open to: ", false)
       setOpen(false) // close snackbar after props.duration
     }, props.duration)
 

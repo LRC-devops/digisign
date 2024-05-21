@@ -6,7 +6,7 @@ import { ICalendarSession, ISession, Sessions } from "../components/sessions/typ
 import { sectionAnnouncements } from "./announcements";
 import { isDiffV2 } from "./stateDiff";
 
-const initalizeSessionClasses = async (sessions: ISession[]): Promise<Sessions> => {
+const initalizeSessionClasses = async (sessions: ISession[], token: string): Promise<Sessions> => {
   let out = [];
   for (let s of sessions) {
     let session = null;
@@ -15,20 +15,20 @@ const initalizeSessionClasses = async (sessions: ISession[]): Promise<Sessions> 
     } else {
       session = new CalendarSession(s as ICalendarSession)
     }
-    await session.initalize();
+    await session.initalize(token);
     out.push(session);
   }
   return out;
 }
-export const fetchSessions = async (sessions: Sessions): Promise<Sessions | Error | null> => {
+export const fetchSessions = async (sessions: Sessions, token: string): Promise<Sessions | Error | null> => {
   try {
     // if there are sessions displayed no need to show loading spinner
-    const res = await getSessions();
+    const res = await getSessions(token);
     if (res instanceof Error) {
       throw res;
     }
     if (isDiffV2(sessions, res)) {
-      let _sessions = await initalizeSessionClasses(res);
+      let _sessions = await initalizeSessionClasses(res, token);
       return _sessions
     }
     return null;
@@ -39,9 +39,9 @@ export const fetchSessions = async (sessions: Sessions): Promise<Sessions | Erro
   }
 }
 
-export const fetchConfig = async (): Promise<Config | Error> => {
+export const fetchConfig = async (token: string): Promise<Config | Error> => {
   try {
-    const res = await getConfig()
+    const res = await getConfig(token)
     if (res instanceof Error) {
       throw res;
     }
@@ -59,9 +59,9 @@ export const fetchConfig = async (): Promise<Config | Error> => {
 }
 
 
-export const fetchAnnouncements = async (): Promise<{ runtimes: number[], announcements: IMaxAnn[][], rawAnnouncements: IMaxAnn[] } | Error> => {
+export const fetchAnnouncements = async (token: string): Promise<{ runtimes: number[], announcements: IMaxAnn[][], rawAnnouncements: IMaxAnn[] } | Error> => {
   try {
-    const res = await getAnnouncements();
+    const res = await getAnnouncements(token);
     if (res instanceof Error) {
       throw res;
     }

@@ -1,11 +1,15 @@
 import axios from "axios"
 import { Config, MaxAnn } from "../components/MaxAnns/types";
+import API_BASE_URL from "./api-url";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-export const getConfig = async (): Promise<Config | Error> => {
+export const getConfig = async (token: string): Promise<Config | Error> => {
   try {
-    const res = await axios.get(`${API_BASE_URL}/announcements/maximized/run-time`);
+    const res = await axios.get(`${API_BASE_URL}/announcements/maximized/run-time`, {
+      headers: { Authorization: 'Barer ' + token },
+
+    }
+    );
     return { ...res.data, interval: res.data.config.interval }
   } catch (err) {
     console.error("[api/maxanns/getConfig]: error: ", err)
@@ -34,9 +38,12 @@ export const preloadAnns = async (anns: MaxAnn[]): Promise<MaxAnn[] | Error> => 
 
 }
 
-export const getAnnouncements = async (): Promise<MaxAnn[] | Error> => {
+export const getAnnouncements = async (token: string): Promise<MaxAnn[] | Error> => {
   try {
-    const res = await axios.get(`${API_BASE_URL}/announcements/maximized`);
+    const res = await axios.get(`${API_BASE_URL}/announcements/maximized`, {
+      headers: { Authorization: 'Barer ' + token },
+    }
+    );
     // return preloadAnns(res.data);
     return res.data;
   } catch (err) {
