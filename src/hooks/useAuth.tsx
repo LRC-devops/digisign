@@ -17,14 +17,14 @@ const useAuth = () => {
     return _uuid
   }
 
-  const storeItem = (key: string, token: string): void => {
-    sessionStorage.setItem(key, JSON.stringify(token))
+  const storeItem = (key: string, value: string): void => {
+    localStorage.setItem(key, JSON.stringify(value))
     setToken(token) // NOTE: or this may solve need to reinit (mentioned above)
     return
   }
 
   const getItem = (key: string): null | string => {
-    var tokenStr = sessionStorage.getItem(key)
+    var tokenStr = localStorage.getItem(key)
     if (!tokenStr) {
       return null;
     }
@@ -48,14 +48,12 @@ const useAuth = () => {
     // if (!storedToken) {
     var token = await getToken(uuid)
     if (token instanceof Error) {
+      setLoading(false)
       return setError({ hasError: true, msg: token.message || "An unknown error occurred" })
     }
     storeItem("token", token)
     setToken(token)
     setLoading(false)
-    // } else {
-    //   setToken(storedToken)
-    // }
   }
   // get token
   useEffect(() => {
@@ -73,6 +71,7 @@ const useAuth = () => {
       await fetchToken(uuid)
       var authState = await getAuthState(token)
       if (authState instanceof Error) {
+        setLoading(false)
         return setError({ hasError: true, msg: authState.message || "An unknown error occurred" })
       }
       setIsAuth(authState.isAuth)

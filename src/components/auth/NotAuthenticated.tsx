@@ -1,7 +1,7 @@
 import useAuth from "../../hooks/useAuth"
 
 const NotAuthenticated = () => {
-  const { isAuth, name, error } = useAuth()
+  const { isAuth, name } = useAuth()
   if (isAuth) {
     return <></>
   }
@@ -15,9 +15,9 @@ const NotAuthenticated = () => {
       <li>Once you&apos;ve found the device, click on the three dots in the upper right-hand corner and select &apos;Verify Device&apos;</li>
       <li>Refresh this page to begin using the LRC DigiSign application for Web!</li>
     </ul>
-    {error.hasError &&
-      <h2 className="mt-10 text-cancel-200 text-2xl">{error.msg}</h2>
-    }
+    {/* {error.hasError && */}
+    {/*   <h2 className="mt-10 text-cancel-200 text-2xl">{error.msg}</h2> */}
+    {/* } */}
   </div>
 
 }

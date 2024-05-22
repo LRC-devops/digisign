@@ -13,7 +13,7 @@ export const getToken = async (uuid: string): Promise<string | Error> => {
   } catch (err) {
     console.error("[api/auth]: error getting token: ", err)
     const error = err as Error;
-    return new Error(`Error sending new device details to the server: ${error.message}`)
+    return new Error(`Error sending device details to the server: ${error.message}`)
   }
 }
 type AuthState = {

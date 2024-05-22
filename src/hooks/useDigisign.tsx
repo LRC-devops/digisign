@@ -100,6 +100,7 @@ export default function useDigisign(token: string) {
       clearTimeout(announcementTimeout)
     }
   }, [state.config, state.sessions, state.announcements])
+  console.log("useDigisign state: ", state)
 
   return { state, dispatch }
 }

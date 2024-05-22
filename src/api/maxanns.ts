@@ -7,7 +7,6 @@ export const getConfig = async (token: string): Promise<Config | Error> => {
   try {
     const res = await axios.get(`${API_BASE_URL}/announcements/maximized/run-time`, {
       headers: { Authorization: 'Barer ' + token },
-
     }
     );
     return { ...res.data, interval: res.data.config.interval }
@@ -44,7 +43,6 @@ export const getAnnouncements = async (token: string): Promise<MaxAnn[] | Error>
       headers: { Authorization: 'Barer ' + token },
     }
     );
-    // return preloadAnns(res.data);
     return res.data;
   } catch (err) {
     console.error("[api/maxanns/getAnnouncements]: error: ", err)
