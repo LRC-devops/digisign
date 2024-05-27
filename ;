@@ -10,7 +10,7 @@ export class Center {
   private hours: Hours;
   start: string;
   end: string;
-  closedToday: boolean
+  private closed: boolean
 
   constructor(name: string, hours: Hours) {
     this.name = name;
@@ -18,7 +18,7 @@ export class Center {
     const { s, e } = this.getStartAndEnd(hours);
     this.start = formatTimeString(`${s.h}:${s.m}`);
     this.end = formatTimeString(`${e.h}:${e.m}`);
-    this.closedToday = false;
+    this.closed = false;
   }
   private getStartAndEnd(hours: Hours): { s: Time, e: Time } {
     if (this.isConstantHours(hours)) {
@@ -30,49 +30,46 @@ export class Center {
       return { s, e }
     }
     const today = partialDays[new Date().getDay()] as PartialDay;
-    const todayHours = hours[today];
-    if (!todayHours) {
-      this.closedToday = true;
-      const s = { h: 0, m: 0 };
-      const e = { h: 0, m: 0 };
-      return { s, e }
+    if (!hours[today]) {
+      this.closed = true;
+      return {
+        { h: 0, e: 0 },
+      { h: 0, e: 0 }
     }
-    const [start, end] = todayHours
-    const [sHour, sMin] = start.split(':')
-    const [eHour, eMin] = end.split(':')
-    const s = { h: +sHour, m: +sMin };
-    const e = { h: +eHour, m: +eMin };
+  }
+  const[start, end] = hours[today]
+  const[sHour, sMin] = start.split(':')
+  const[eHour, eMin] = end.split(':')
+  const s = { h: +sHour, m: +sMin };
+  const e = { h: +eHour, m: +eMin };
     return { s, e }
   }
 
 
   private isConstantHours(hours: Hours = this.hours): hours is ConstantHours {
-    return "all" in hours;
-  }
+  return "all" in hours;
+}
 
   private calcIsOpen(s: Time, e: Time): boolean {
-    if (this.closedToday) {
-      return false;
-    }
-    let now = new Date();
-    let start = new Date();
-    start.setHours(s.h);
-    start.setMinutes(s.m)
-    let end = new Date();
-    end.setHours(e.h)
-    end.setMinutes(e.m)
-    return start <= now && now <= end
-  }
+  let now = new Date();
+  let start = new Date();
+  start.setHours(s.h);
+  start.setMinutes(s.m)
+  let end = new Date();
+  end.setHours(e.h)
+  end.setMinutes(e.m)
+  return start <= now && now <= end
+}
 
-  isOpen(): boolean {
-    const { s, e } = this.getStartAndEnd(this.hours);
-    if (this.isConstantHours(this.hours)) {
-      return this.calcIsOpen(s, e)
-    }
-    const today = partialDays[new Date().getDay()];
-    if (!this.hours[today]) {
-      return false;
-    }
+isOpen(): boolean {
+  const { s, e } = this.getStartAndEnd(this.hours);
+  if (this.isConstantHours(this.hours)) {
     return this.calcIsOpen(s, e)
   }
+  const today = partialDays[new Date().getDay()];
+  if (!this.hours[today]) {
+    return false;
+  }
+  return this.calcIsOpen(s, e)
+}
 }

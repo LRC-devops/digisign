@@ -8,8 +8,16 @@ export type THour = {
 export type ConstantHours = {
   all: string[]
 }
-export type DynamicHours = {
-  [key in PartialDay]: string[]
-}
+// export type DynamicHours = {
+//   // Su?: string[]
+//   // M?: string[]
+//   // Tu?: string[]
+//   // W?: string[]
+//   // Th?: string[]
+//   // F?: string[]
+//   // Sa?: string[]
+//   [key in PartialDay]: string[]
+// }
+export type DynamicHours = Partial<Record<PartialDay, string[]>>;
 export type Hours = ConstantHours | DynamicHours
 
