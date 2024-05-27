@@ -81,14 +81,16 @@ export default function useDigisign(token: string) {
       isError: false
     }
     // var duration = 60000 + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000)// dev timing
-    var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000); // prod timing
+    var duration = state.config.interval + (state.config.runtimes ? state.config.runtimes[state.config.currentPage] : 120000); // prod timing // BUG: does this need to include the animation offset for each ann transition?
     var snackAnimationOffset = 5000
     let announcementTimeout: ReturnType<typeof setTimeout>;
     var snackTimeout = setTimeout(async () => {
       if (state.announcements.length > 1 && state.config) {
 
         dispatch({ type: "setSnack", payload: snack })
+        console.log("[useDigisign]: running notification")
         announcementTimeout = setTimeout(async () => {
+          console.log("[useDigisign]: running anns")
           dispatch({ type: "setAnnouncementsRunning", payload: true })
           dispatch({ type: "setSnack", payload: resetSnack })
         }, snack.duration + snackAnimationOffset)
@@ -96,11 +98,11 @@ export default function useDigisign(token: string) {
     }, duration - snack.duration + snackAnimationOffset)
 
     return () => {
+      console.log("[useDigisign]: clearing timeouts ")
       clearTimeout(snackTimeout)
       clearTimeout(announcementTimeout)
     }
   }, [state.config, state.sessions, state.announcements])
-  console.log("useDigisign state: ", state)
 
   return { state, dispatch }
 }

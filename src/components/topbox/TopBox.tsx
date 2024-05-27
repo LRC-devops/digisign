@@ -4,7 +4,7 @@ import MinAnns from "./MinAnns/MinAnns"
 import Hours from "./hours/Hours"
 
 const TopBox = (props: { token: string }) => {
-  return <div className="flex justify-between gap-10 min-w-0 min-h-0 max-h-[18vh] h-[18vh]">
+  return <div className="flex justify-between gap-10 min-w-0 min-h-0 h-[18vh] ">
     <DateTime />
     <ErrorBoundary>
       <MinAnns token={props.token} />

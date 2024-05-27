@@ -36,6 +36,7 @@ export interface ICalendarSession extends ISession {
   date: Date, // timecode
   duration: number, //minutes
   type: "calendars"
+  isCancelled?: boolean
 }
 
 export type Sessions = (ScheduledSession | CalendarSession)[]

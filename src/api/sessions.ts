@@ -8,9 +8,11 @@ export const getSessions = async (token: string) => {
       headers: { Authorization: 'Barer ' + token },
     });
     if (res.data.length < 1) {
-      throw new Error("No sessions found...")
+      // throw new Error("No sessions found...")
+      return []
     }
     return filterSessionsWithinHour(res.data);
+    // res.data
   } catch (err) {
     const error = err as Error;
     console.error("[api/sessions/getSessions]: error: ", error.message);

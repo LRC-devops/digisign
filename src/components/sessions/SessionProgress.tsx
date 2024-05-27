@@ -71,7 +71,7 @@ const SessionProgress = ({ session, delay }: Props) => {
 
 
   if (session.isCancelled()) {
-    return <div className={getBGClass(session)}>
+    return <div className={getBGClass(session) + " flex items-center"}>
       <p className="ml-5 font-bold">Cancelled</p>
     </div >
   }

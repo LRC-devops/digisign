@@ -6,6 +6,7 @@ type Props = {
   session: CalendarSession | ScheduledSession,
 }
 const CardTop = ({ session }: Props) => {
+  console.log("rendering cardTop...")
 
   return <div className="flex justify-between w-full">
     <Notifier session={session} />

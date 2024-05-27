@@ -10,7 +10,7 @@ type StatusProps = {
 }
 
 const CardStatus = ({ session }: StatusProps) => {
-  var baseClass = "w-10 h-2 rounded-lg mb-3 "
+  var baseClass = "w-10 h-1 rounded-lg mb-3 "
   let statusClass = baseClass;
   if (session.isCancelled()) {
     statusClass += "bg-cancel-500"

@@ -38,7 +38,8 @@ export const formateDateString = (date: number): string => {
   return `${date}${suffixes[lastNum]}`
 }
 
-export const getTime = (date: Date): string => {
+export const getTime = (_date: Date): string => {
+  var date = new Date(_date.toLocaleString("en", { timeZone: "America/Denver" }))
   var hours = date.getHours();
   var minutes: string | number = date.getMinutes()
 
@@ -46,8 +47,10 @@ export const getTime = (date: Date): string => {
     minutes = `0${minutes}`
   }
 
-  if (hours <= 12) {
+  if (hours < 12) {
     return `${hours}:${minutes} AM`
+  } else if (hours === 12) {
+    return `${hours}:${minutes} PM`
   }
   return `${hours - 12}:${minutes} PM`
 }
@@ -56,8 +59,10 @@ export const formatTimeString = (time: string): string => {
   if (m.length < 2) {
     m = `0${m}`
   }
-  if (+h <= 12) {
+  if (+h < 12) {
     return `${h}:${m} AM`
+  } else if (+h === 12) {
+    return `${h}:${m} PM`
   }
   return `${+h - 12}:${m} PM`
 }

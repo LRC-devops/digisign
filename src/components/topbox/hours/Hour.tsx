@@ -21,19 +21,19 @@ const Hour = (props: Props) => {
   }, [])
 
   return <AnimatePresence>
-    <div className="flex-col">
+    <div className="flex flex-col m-0 h-full gap-2">
       <motion.h2
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.1, duration: 0.3 }}
-        className="text-3xl font-light">{hours.name}</motion.h2>
+        className="text-[45%] font-light m-0 leading-none">{hours.name}</motion.h2>
       <motion.div
         initial={{ opacity: 0, x: 10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.3 }}
-        className="flex gap-2 items-center">
+        className="text-[25%] flex gap-2 items-center m-0 leading-none">
         <Status open={open} />
-        <h3 className={`${open ? 'text-green-300' : 'text-red-300'} text-1xl font-bold m-0`}>{`${center.start} - ${center.end}`}</h3>
+        <h3 className={`${open ? 'text-green-300' : 'text-red-300'} font-bold m-0 leading-none`}>{`${center.start} - ${center.end}`}</h3>
       </motion.div>
     </div>
   </AnimatePresence>

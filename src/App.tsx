@@ -10,7 +10,7 @@ import MainError from './components/MainError'
 function App() {
   const { isAuth, token, loading, error } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
-  //
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(loading)

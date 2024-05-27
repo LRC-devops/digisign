@@ -14,7 +14,7 @@ const animation = {
     opacity: 1
   },
   transition: {
-    duration: 1,
+    duration: 0.5,
   }
 }
 const MaxAnn = ({ a }: Props) => {
@@ -50,8 +50,6 @@ const MaxAnn = ({ a }: Props) => {
       </div>
     </motion.div>
   }
-
-
 }
 
 export default MaxAnn

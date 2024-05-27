@@ -15,13 +15,21 @@ type Props = {
 }
 const MainView = ({ token }: Props) => {
   const { state, dispatch } = useDigisign(token)
-  // if (state.loading) {
-  //   return <LoadingSpinner loading={state.loading} />
-  // }
+
+  const setSnackError = (msg: string) => {
+    return {
+      heading: "Oops...",
+      body: msg,
+      duration: 12000,
+      open: true,
+      isError: true
+    }
+
+  }
 
   return (
-    <main className="flex w-[100vw] h-[100vh] bg-[url('/bg.jpg')]">
-      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
+    <main className="flex w-full h-full bg-[url('/bg.jpg')]">
+      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center overflow-hidden">
         <LoadingSpinner loading={state.loading} />
       </div>
       <ErrorBoundary>
@@ -38,16 +46,17 @@ const MainView = ({ token }: Props) => {
           </ErrorBoundary>
           :
           <>
-            <div className='flex flex-col p-10 justify-between align-middle w-full h-full z-0'>
+            <div className='flex flex-col p-5 justify-between align-middle w-full h-full z-0'>
               <TopBox token={token} />
               <ErrorBoundary>
-                <SessionsWidget sessions={state.sessions} error={state.error} loading={state.loading} />
+                <SessionsWidget sessions={state.sessions} error={state.error} setError={(msg: string) => setSnackError(msg)} loading={state.loading} />
               </ErrorBoundary>
               <SnackBar {...state.snack} />
             </div>
           </>
         }
       </ErrorBoundary>
+      {/* <div className="absolute bottom-0 left-0 right-0 bg-black"><p>{JSON.stringify(state)}</p></div> */}
     </main>
   )
 }

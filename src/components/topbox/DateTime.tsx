@@ -39,7 +39,7 @@ const DateTime = () => {
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="font-extralight  text-[61%] mb-3 mr-auto">{dateTime.day}</motion.h2>
+          className="font-extralight  text-[61%] mr-auto">{dateTime.day}</motion.h2>
         <motion.h2
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -49,7 +49,7 @@ const DateTime = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.3 }}
-          className="font-extralight ml-auto text-[61%] mt-2 mb-0">{dateTime.time}</motion.h2>
+          className="font-extralight ml-auto text-[61%] mb-0">{dateTime.time}</motion.h2>
       </div>
     </AnimatePresence>
   )

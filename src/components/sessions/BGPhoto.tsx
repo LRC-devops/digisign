@@ -12,7 +12,7 @@ const BGPhoto = ({ session }: Props) => {
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
     exit={{ opacity: 0 }}
-    className="absolute top-0 left-0 right-0 bottom-0 bg-red-500 z-[-1]">
+    className="absolute top-0 left-0 right-0 bottom-0 bg-gold-500 z-[-1]">
     <img className="w-full h-full object-cover" src={uri} />
   </motion.div>
 

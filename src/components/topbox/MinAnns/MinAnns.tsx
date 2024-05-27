@@ -119,7 +119,7 @@ const MinAnns = ({ token }: { token: string }) => {
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full flex flex-col gap-3">
       <ProgressBars
         currentIdx={state.curr}
         bars={state.announcements.map(a => a.duration)}

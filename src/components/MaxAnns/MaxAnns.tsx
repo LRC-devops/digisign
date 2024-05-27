@@ -2,7 +2,7 @@ import { useEffect, useReducer } from "react"
 import { MaxAnn as IMaxAnn } from "./types"
 import ProgressBars from "../pages/ProgressBars"
 import MaxAnn from "./MaxAnn"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 
 
 type Props = {
@@ -29,18 +29,21 @@ const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
       if (state.next === 0) {
+        console.log("[MaxAnns]: next=0 => returning state")
         return state;
       }
       var curr = (state.curr + 1) % state.announcements.length
       var next = (curr + 1) % state.announcements.length
       var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
+      console.log("[MaxAnns]: running next announcements")
       return {
         ...state, curr, next
       }
     case 'reset':
       var curr = 0;
-      var next = 0;
+      var next = 1;
       var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
+      console.log("[MaxAnns]: resetting state")
       return {
         ...state, curr, dur, next
       }
@@ -56,6 +59,7 @@ const initialState: State = {
 
 const MaxAnns = ({ setRunning, announcements }: Props) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, announcements })
+  console.log("Mounting maxAnns with state: ", state)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -88,17 +92,19 @@ const MaxAnns = ({ setRunning, announcements }: Props) => {
       <div className="w-full h-full p-5">
         <ProgressBars
           currentIdx={state.curr}
-          bars={state.announcements.map(a => a.duration)}
+          bars={state.announcements.map(a => a.duration + ANIMATION_OFFSET)}
         />
       </div>
     </div>
-    <motion.div
+    <div
       className="overflow-hidden"
     >
-      <MaxAnn
-        key={state.announcements[state.curr].name}
-        a={state.announcements[state.curr]} />
-    </motion.div>
+      <AnimatePresence>
+        <MaxAnn
+          key={state.curr}
+          a={state.announcements[state.curr]} />
+      </AnimatePresence>
+    </div>
   </motion.div>
 }
 

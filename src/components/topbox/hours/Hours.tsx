@@ -41,7 +41,7 @@ const Hours = ({ token }: { token: string }) => {
     return <LoadingSpinner loading={true} />
   }
 
-  return <div className="flex flex-col h-full justify-between min-w-[22vw]">
+  return <div className="flex flex-col h-full overflow-hidden justify-between min-w-[22vw] text-[3vw]">
     {data.map((h, idx) => (
       <Hour key={idx} hours={h} />
     ))}

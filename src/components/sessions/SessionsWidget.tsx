@@ -52,17 +52,20 @@ type Props = {
   sessions: (ScheduledSession | CalendarSession)[]
   error: ComponentError,
   loading: boolean
+  setError: (msg: string) => void
 }
 const initialState: State = {
   sessions: [],
   curr: 0,
 }
-const SessionsWidget = ({ sessions, error }: Props) => {
-  if (error.hasError) {
+const SessionsWidget = ({ sessions, error, setError }: Props) => {
+  if (error.hasError && sessions.length < 1) {
     throw new Error(error.msg || "An unknown error occurred")
+  } else if (error.hasError && sessions.length > 0) { // if sessions.length > 0
+    setError(error.msg || "An unknown error occurred.")
   }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const DURATION = 10000
+  const DURATION = 15000
 
   useEffect(() => {
     dispatch({ type: 'setSessions', payload: formatSessionsPages(sessions) })

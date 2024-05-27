@@ -56,9 +56,10 @@ export abstract class Session<T extends ISession> {
 export class CalendarSession extends Session<ICalendarSession> {
   date: Date
   duration: number
-  cancel: {
-    init: Date
-  }
+  // cancel: {
+  //   init: Date
+  // }
+  cancelled: boolean
   rawTime: {
     start: string
     end: string
@@ -70,9 +71,10 @@ export class CalendarSession extends Session<ICalendarSession> {
     super(session)
     this.date = new Date(session.date)
     this.duration = session.duration;
-    this.cancel = {
-      init: new Date(session.initCancel)
-    }
+    // this.cancel = {
+    //   init: new Date(session.initCancel)
+    // }
+    this.cancelled = session?.isCancelled || false
     this.rawTime = this.getRawTime()
     var { start, end } = this.getFriendlyTimes()
     this.startTime = start;
@@ -98,8 +100,9 @@ export class CalendarSession extends Session<ICalendarSession> {
     }
   }
   isCancelled(): boolean {
-    var now = new Date();
-    return now.toLocaleDateString() === this.cancel.init.toLocaleDateString()
+    return this.cancelled
+    // var now = new Date();
+    // return now.toLocaleDateString() === this.cancel.init.toLocaleDateString()
   }
 }
 
