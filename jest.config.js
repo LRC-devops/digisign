@@ -1,6 +1,8 @@
 
 const config = {
-  modulePathIgnorePatterns: ["data"]
+  modulePathIgnorePatterns: ["data"],
+  collectCoverage: true,
+  coverageDirectory: "coverage"
 }
 
 export default config

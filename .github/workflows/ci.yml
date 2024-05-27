@@ -1,0 +1,38 @@
+name: CI
+
+on: 
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+
+jobs: 
+  build-and-test: 
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Run Jest tests
+        run: npm test
+
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v2
+        with: 
+          name: coverage-report
+          path: coverage/
