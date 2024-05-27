@@ -5,7 +5,7 @@ import { buildDate } from "./datetime";
 type RawSessions = (ICalendarSession | IScheduledSession)[]
 type RawSession = ICalendarSession | IScheduledSession
 
-const sortSessions = (sessions: RawSessions): void => {
+export const sortSessions = (sessions: RawSessions): void => {
   sessions.sort((a, b) => {
     let aStart, bStart: Date;
     if (isScheduledSession(a)) {
@@ -44,6 +44,7 @@ const isCalendarSessionWithinHour = (s: ICalendarSession): boolean => {
   var now = new Date();
   var date = new Date(s.date);
   date.setHours(date.getHours() - 1)
+  //BUG: this does not seem to take care of sessions in the past, however this may be handled by API
 
   return now >= date
 }

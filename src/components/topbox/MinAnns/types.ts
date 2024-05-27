@@ -7,7 +7,7 @@ export type MinimizedAnnouncement = {
   subheads: string[]
   details: string[]
   docId: string
-  updatedAt?: string
-  createdAt: string
+  updatedAt?: number | Date
+  createdAt: number | Date
 
 }

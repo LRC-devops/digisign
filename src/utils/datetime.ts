@@ -14,7 +14,7 @@ export const getFullMonth = (intMonth: number): Month => {
   return fullMonths[intMonth]
 }
 
-export const formateDateString = (date: number): string => {
+export const formatDateString = (date: number): string => {
   // check for teens => always ends in 'th'
 
   if (date >= 10 && date <= 19) {

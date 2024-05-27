@@ -16,10 +16,10 @@ const Hour = (props: Props) => {
   useEffect(() => {
     setInterval(() => {
       setOpen(center.isOpen())
-
     }, 6000)
   }, [])
 
+  console.log(center)
   return <AnimatePresence>
     <div className="flex flex-col m-0 h-full gap-2">
       <motion.h2
@@ -33,7 +33,7 @@ const Hour = (props: Props) => {
         transition={{ delay: 0.2, duration: 0.3 }}
         className="text-[25%] flex gap-2 items-center m-0 leading-none">
         <Status open={open} />
-        <h3 className={`${open ? 'text-green-300' : 'text-red-300'} font-bold m-0 leading-none`}>{`${center.start} - ${center.end}`}</h3>
+        <h3 className={`${open ? 'text-green-300' : 'text-red-300'} font-bold m-0 leading-none`}>{`${center.closedToday ? "CLOSED" : `${center.start} - ${center.end}`}`}</h3>
       </motion.div>
     </div>
   </AnimatePresence>

@@ -25,8 +25,8 @@ export function isDiff(current: Element[], incoming: Element[]): boolean {
 }
 // this one is definetly ideal, but I didnt add the updatedAt field to minimizedAnnouncements... so I have to stringify via the method above for announcements.
 interface Element {
-  updatedAt?: string
-  createdAt: string
+  updatedAt?: number | Date
+  createdAt: number | Date
   docId: string
 }
 const buildKey = (el: Element) => {
