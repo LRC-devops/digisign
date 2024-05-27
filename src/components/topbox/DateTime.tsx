@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Day, Month, formateDateString, getFullDay, getFullMonth, getTime } from "../../utils/datetime"
+import { Day, Month, formatDateString, getFullDay, getFullMonth, getTime } from "../../utils/datetime"
 import { AnimatePresence, motion } from "framer-motion";
 
 
@@ -14,7 +14,7 @@ const getDateTime = (): DateTime => {
   const now = new Date();
   const dateTime = {
     day: getFullDay(now.getDay()),
-    date: formateDateString(now.getDate()),
+    date: formatDateString(now.getDate()),
     month: getFullMonth(now.getMonth()),
     time: getTime(now)
   }

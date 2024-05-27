@@ -36,12 +36,13 @@ export class Center {
     return { s, e }
   }
 
+
   private isConstantHours(hours: Hours = this.hours): hours is ConstantHours {
     return "all" in hours;
   }
 
   private calcIsOpen(s: Time, e: Time): boolean {
-    let now = new Date();
+    let now = new Date("05/13/2024 16:31:00");
     let start = new Date();
     start.setHours(s.h);
     start.setMinutes(s.m)

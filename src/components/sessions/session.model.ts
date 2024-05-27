@@ -20,8 +20,8 @@ export abstract class Session<T extends ISession> {
   mode: string
   service: string
   docId: string
-  createdAt: string
-  updatedAt: string | undefined
+  createdAt: number | Date
+  updatedAt?: number | Date
 
 
   constructor(session: T) {
@@ -35,7 +35,6 @@ export abstract class Session<T extends ISession> {
     this.docId = session.docId
     this.createdAt = session.createdAt
     this.updatedAt = session?.updatedAt || undefined
-
   }
 
   async initalize(token: string): Promise<void> {
@@ -56,9 +55,6 @@ export abstract class Session<T extends ISession> {
 export class CalendarSession extends Session<ICalendarSession> {
   date: Date
   duration: number
-  // cancel: {
-  //   init: Date
-  // }
   cancelled: boolean
   rawTime: {
     start: string
@@ -66,6 +62,8 @@ export class CalendarSession extends Session<ICalendarSession> {
   }
   startTime: string
   endTime: string
+  initCancel: number | Date
+  revertCancel: number | Date
 
   constructor(session: ICalendarSession) {
     super(session)
@@ -74,6 +72,9 @@ export class CalendarSession extends Session<ICalendarSession> {
     // this.cancel = {
     //   init: new Date(session.initCancel)
     // }
+    this.initCancel = session.initCancel || 0
+    this.revertCancel = session.revertCancel || 0
+
     this.cancelled = session?.isCancelled || false
     this.rawTime = this.getRawTime()
     var { start, end } = this.getFriendlyTimes()

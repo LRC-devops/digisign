@@ -3,7 +3,7 @@ import { CalendarSession, ScheduledSession } from "./session.model"
 
 export interface ISession {
   subject: string,
-  signageImage: string,
+  signageImage?: string,
   upPhoto?: UPPhoto,
   type: "schedules" | "calendars"
   mode: "in-person" | "zoom",
@@ -13,11 +13,11 @@ export interface ISession {
     building: string,
     room: string,
   } | null,
-  initCancel: Date,
-  revertCancel: Date,
+  initCancel: Date | number,
+  revertCancel: Date | number,
   docId: string
-  updatedAt?: string
-  createdAt: string
+  updatedAt?: number | Date
+  createdAt: number | Date
 }
 
 export interface IScheduledSession extends ISession {
@@ -25,15 +25,18 @@ export interface IScheduledSession extends ISession {
   endTime: string,
   course: string[] | string,
   temp: {
-    startDate: Date,
-    endDate: Date
+    startDate: Date | number,
+    endDate: Date | number
   }
   type: "schedules"
   singleDay: boolean
+  startDate: Date | number,
+  endDate: Date | number
+  day: string
 }
 
 export interface ICalendarSession extends ISession {
-  date: Date, // timecode
+  date: Date | number, // timecode
   duration: number, //minutes
   type: "calendars"
   isCancelled?: boolean
