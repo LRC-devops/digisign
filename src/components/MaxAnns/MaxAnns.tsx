@@ -59,7 +59,6 @@ const initialState: State = {
 
 const MaxAnns = ({ setRunning, announcements }: Props) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, announcements })
-  console.log("Mounting maxAnns with state: ", state)
 
   useEffect(() => {
     const interval = setInterval(() => {
