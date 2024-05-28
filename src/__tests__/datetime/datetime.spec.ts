@@ -48,7 +48,6 @@ describe("Tests datetime fns", () => {
   // RECIEVED: 04:00 PM
   test("Localtime string should correctly change the TZ", () => {
     // let date = new Date("2024-05-27T00:00:00.000")
-    // console.log(date)
     // // NOTE: this likely will always pass locally, but when run on the server or in GH actions should actually determine if it works.
     // expect(localeTimeString(date)).toEqual("12:00 AM")
   })

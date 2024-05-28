@@ -8,6 +8,7 @@ import { CalendarSession, ScheduledSession } from "./session.model";
 
 interface State {
   sessions: (ScheduledSession | CalendarSession)[][];
+  durations: number[]
   curr: number;
 }
 type Action =
@@ -23,7 +24,19 @@ const reducer = (state: State, action: Action): State => {
         ...state, curr: curr
       }
     case "setSessions":
-      return { ...state, sessions: action.payload }
+      var durations = action.payload.map((_, idx) => {
+        switch (idx) {
+          case 0:
+            return 15000
+          case 1:
+            return 10000
+          case 2:
+            return 8000
+          default:
+            return 6000
+        }
+      })
+      return { ...state, sessions: action.payload, durations }
   }
 }
 
@@ -57,6 +70,7 @@ type Props = {
 const initialState: State = {
   sessions: [],
   curr: 0,
+  durations: [15000]
 }
 const SessionsWidget = ({ sessions, error, setError }: Props) => {
   if (error.hasError && sessions.length < 1) {
@@ -65,23 +79,26 @@ const SessionsWidget = ({ sessions, error, setError }: Props) => {
     setError(error.msg || "An unknown error occurred.")
   }
   const [state, dispatch] = useReducer(reducer, initialState)
-  const DURATION = 15000
+  // const DURATION = 15000
 
   useEffect(() => {
     dispatch({ type: 'setSessions', payload: formatSessionsPages(sessions) })
   }, [sessions])
 
 
+
   useEffect(() => {
-    if (state.sessions.length >= 1) {
-      var interval = setInterval(() => {
-        dispatch({ type: "next" })
-      }, DURATION)
+    if (state.sessions.length < 1) {
+      return;
     }
+    var timeout = setTimeout(() => {
+      dispatch({ type: 'next' })
+    }, state.durations[state.curr])
     return () => {
-      clearInterval(interval)
+      clearTimeout(timeout)
     }
-  }, [sessions, state.sessions.length])
+  }, [state.sessions.length, state.durations, state.curr])
+
 
 
   if (state.sessions.length < 1) {
@@ -90,12 +107,14 @@ const SessionsWidget = ({ sessions, error, setError }: Props) => {
 
 
 
+
   return <div className="w-full h-full pt-10 flex flex-col gap-3">
     <ErrorBoundary>
       {state.sessions.length > 1 &&
         <ProgressBars
           currentIdx={state.curr}
-          bars={state.sessions.map((_: any) => DURATION)}
+          // bars={state.sessions.map((_: any) => DURATION)}
+          bars={state.durations}
         />
       }
       <div className="w-full h-full flex flex-wrap justify-between gap-3">

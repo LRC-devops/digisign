@@ -1,9 +1,9 @@
-import { FaBuilding, FaClock, FaFolder, FaUser, FaFolderOpen, FaNewspaper } from "react-icons/fa"
+import { FaBuilding, FaClock, FaFolder, FaRocket, FaTools, FaUser, FaUsers } from "react-icons/fa"
 import BottomGradient from "./BottomGradient"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
 import { FaComputer } from "react-icons/fa6"
-import { motion } from "framer-motion"
+import { IoSchool } from "react-icons/io5"
 
 type StatusProps = {
   session: ScheduledSession | CalendarSession
@@ -32,40 +32,83 @@ type BoxProps = {
   addClasses?: string
   idx?: number
 }
-const Box = ({ children, addClasses, idx }: BoxProps) => {
-  var offset = idx ? ((idx + 1) / 10) + 0.6 : 0.6
 
-  return <motion.div
-    initial={{ y: -10, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ delay: offset, duration: 0.3 }}
-    className={`flex gap-1 items-center ${addClasses}`}>{children}</motion.div>
+enum Service {
+  PeerTutoring = "peer-tutoring",
+  SSW = "study-skills-workshops",
+  Boost = "boost",
+  SupplementalLearning = "supplemental-learning"
+}
+const serviceIcons = {
+  [Service.PeerTutoring]: <FaUsers />,
+  [Service.SSW]: <FaTools />,
+  [Service.Boost]: <FaRocket />,
+  [Service.SupplementalLearning]: <IoSchool />,
+  default: <FaFolder />
+}
+const Box = ({ children, addClasses }: BoxProps) => {
+
+  return <div
+    className={`flex gap-1 items-center ${addClasses}`}>{children}</div>
 }
 const CardDetails = ({ session }: Props) => {
+  var icon;
+  switch (session.service) {
+    case Service.PeerTutoring:
+      icon = serviceIcons[Service.PeerTutoring]
+      break;
+    case Service.SSW:
+      icon = serviceIcons[Service.SSW]
+      break;
+    case Service.Boost:
+      icon = serviceIcons[Service.Boost]
+      break;
+    case Service.SupplementalLearning:
+      icon = serviceIcons[Service.SupplementalLearning]
+      break;
+    default:
+      icon = serviceIcons.default
+      break;
+  }
   return <BottomGradient>
     <>
       <CardStatus session={session} />
-      <Box idx={0} addClasses="text-white/75">
+      <Box idx={0} addClasses="text-3xl font-light ">
+        <>
+          {/* <FaFolderOpen /> */}
+          <p className="">{session.subject}</p>
+        </>
+      </Box>
+      {session instanceof ScheduledSession &&
+        <Box idx={1} addClasses="text-xl mb-3">
+          <>
+            {/* <FaNewspaper className="" /> */}
+            <p className="overflow-hidden truncate font-bold"><span className="font-normal text-white/60">Courses:</span> {session.course.join(", ")}</p>
+          </>
+        </Box>
+      }
+      <Box idx={2} addClasses="text-white/75">
         <>
           <FaClock />
           <p>{session.startTime} - {session.endTime}</p>
         </>
       </Box>
-      <Box idx={1} addClasses="flex gap-3 items-center text-white/75">
+      <Box idx={3} addClasses="flex gap-3 items-center text-white/75 mt-2">
         <>
-          <Box>
+          <Box addClasses="">
+
             <>
-              <FaFolder />
+              {icon}
               <p>{session.service}</p>
             </>
           </Box>
-          <Box>
+          <Box addClasses="">
             <>
               {session.mode === "in-person" ? <FaBuilding /> : session.mode === "zoom" ? <FaComputer /> : ""}
               <p>{session.mode}</p>
             </>
           </Box>
-          <Box>
+          <Box addClasses="">
             <>
               <FaUser />
               <p>{session.host}</p>
@@ -73,20 +116,6 @@ const CardDetails = ({ session }: Props) => {
           </Box>
         </>
       </Box>
-      <Box idx={2}>
-        <>
-          <FaFolderOpen />
-          <p className="font-bold">{session.subject}</p>
-        </>
-      </Box>
-      {session instanceof ScheduledSession &&
-        <Box idx={3}>
-          <>
-            <FaNewspaper className="" />
-            <p className="overflow-hidden truncate max-w-[90%]">{session.course.join(", ")}</p>
-          </>
-        </Box>
-      }
     </>
   </BottomGradient>
 

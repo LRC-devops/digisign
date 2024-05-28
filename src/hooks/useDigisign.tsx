@@ -88,9 +88,7 @@ export default function useDigisign(token: string) {
       if (state.announcements.length > 1 && state.config) {
 
         dispatch({ type: "setSnack", payload: snack })
-        console.log("[useDigisign]: running notification")
         announcementTimeout = setTimeout(async () => {
-          console.log("[useDigisign]: running anns")
           dispatch({ type: "setAnnouncementsRunning", payload: true })
           dispatch({ type: "setSnack", payload: resetSnack })
         }, snack.duration + snackAnimationOffset)
@@ -98,7 +96,6 @@ export default function useDigisign(token: string) {
     }, duration - snack.duration + snackAnimationOffset)
 
     return () => {
-      console.log("[useDigisign]: clearing timeouts ")
       clearTimeout(snackTimeout)
       clearTimeout(announcementTimeout)
     }

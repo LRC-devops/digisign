@@ -19,7 +19,6 @@ const Hour = (props: Props) => {
     }, 6000)
   }, [])
 
-  console.log(center)
   return <AnimatePresence>
     <div className="flex flex-col m-0 h-full gap-2">
       <motion.h2
