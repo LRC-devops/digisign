@@ -1,9 +1,10 @@
-import { FaBuilding, FaClock, FaFolder, FaUser } from "react-icons/fa"
+import { FaBuilding, FaClock, FaFolder, FaRocket, FaTools, FaUser, FaUsers } from "react-icons/fa"
 import BottomGradient from "./BottomGradient"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
 import { FaComputer } from "react-icons/fa6"
 import { motion } from "framer-motion"
+import { IoSchool } from "react-icons/io5"
 
 type StatusProps = {
   session: ScheduledSession | CalendarSession
@@ -32,6 +33,20 @@ type BoxProps = {
   addClasses?: string
   idx?: number
 }
+
+enum Service {
+  PeerTutoring = "peer-tutoring",
+  SSW = "study-skills-workshops",
+  Boost = "boost",
+  SupplementalLearning = "supplemental-learning"
+}
+const serviceIcons = {
+  [Service.PeerTutoring]: <FaUsers />,
+  [Service.SSW]: <FaTools />,
+  [Service.Boost]: <FaRocket />,
+  [Service.SupplementalLearning]: <IoSchool />,
+  default: <FaFolder />
+}
 const Box = ({ children, addClasses, idx }: BoxProps) => {
   var offset = idx ? ((idx + 1) / 10) + 0.6 : 0.6
 
@@ -42,6 +57,25 @@ const Box = ({ children, addClasses, idx }: BoxProps) => {
     className={`flex gap-1 items-center ${addClasses}`}>{children}</motion.div>
 }
 const CardDetails = ({ session }: Props) => {
+  var icon;
+  console.log(session.service)
+  switch (session.service) {
+    case Service.PeerTutoring:
+      icon = serviceIcons[Service.PeerTutoring]
+      break;
+    case Service.SSW:
+      icon = serviceIcons[Service.SSW]
+      break;
+    case Service.Boost:
+      icon = serviceIcons[Service.Boost]
+      break;
+    case Service.SupplementalLearning:
+      icon = serviceIcons[Service.SupplementalLearning]
+      break;
+    default:
+      icon = serviceIcons.default
+      break;
+  }
   return <BottomGradient>
     <>
       <CardStatus session={session} />
@@ -70,7 +104,7 @@ const CardDetails = ({ session }: Props) => {
           <Box addClasses="">
 
             <>
-              <FaFolder />
+              {icon}
               <p>{session.service}</p>
             </>
           </Box>
