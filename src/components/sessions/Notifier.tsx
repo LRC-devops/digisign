@@ -72,7 +72,6 @@ const buildNotifier = (session: ScheduledSession | CalendarSession): TNotifier[]
 const Notifier = ({ session }: Props) => {
 
   const notifier = buildNotifier(session);
-  console.log("[notifier]: ", notifier)
   if (!notifier) {
     return <></>
   }

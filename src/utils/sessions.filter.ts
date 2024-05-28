@@ -5,8 +5,16 @@ import { buildDate } from "./datetime";
 type RawSessions = (ICalendarSession | IScheduledSession)[]
 type RawSession = ICalendarSession | IScheduledSession
 
+/*
+ * Sorts sessions based on their distance from now
+ * So sessions which have just started or are about to start appear at the front of the first page.
+ * FIXME: If the most important info is on the first page, should the durations of subsequent pages diminish?
+ */
 export const sortSessions = (sessions: RawSessions): void => {
   sessions.sort((a, b) => {
+    var now = new Date();
+    let aDistToNow = 0;
+    let bDistToNow = 0;
     let aStart, bStart: Date;
     if (isScheduledSession(a)) {
       aStart = buildDate(a.startTime);
@@ -18,7 +26,9 @@ export const sortSessions = (sessions: RawSessions): void => {
     } else {
       bStart = new Date(b.date)
     }
-    return aStart.getTime() - bStart.getTime()
+    aDistToNow = Math.abs(now.valueOf() - aStart.valueOf())
+    bDistToNow = Math.abs(now.valueOf() - bStart.valueOf())
+    return aDistToNow - bDistToNow
   })
 }
 

@@ -59,5 +59,5 @@ export const initialState: State = {
   announcements: [],
   rawAnnouncements: [],
   config: emptyConfig,
-  snack: emptySnack
+  snack: emptySnack,
 }

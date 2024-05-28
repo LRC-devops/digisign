@@ -29,13 +29,11 @@ const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
       if (state.next === 0) {
-        console.log("[MaxAnns]: next=0 => returning state")
         return state;
       }
       var curr = (state.curr + 1) % state.announcements.length
       var next = (curr + 1) % state.announcements.length
       var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
-      console.log("[MaxAnns]: running next announcements")
       return {
         ...state, curr, next
       }
@@ -43,7 +41,6 @@ const reducer = (state: State, action: Action): State => {
       var curr = 0;
       var next = 1;
       var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
-      console.log("[MaxAnns]: resetting state")
       return {
         ...state, curr, dur, next
       }
