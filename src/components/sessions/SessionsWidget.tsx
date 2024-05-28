@@ -91,7 +91,6 @@ const SessionsWidget = ({ sessions, error, setError }: Props) => {
     if (state.sessions.length < 1) {
       return;
     }
-    console.log("[SessionsWidget]: next...", state.durations, state.durations[state.curr])
     var timeout = setTimeout(() => {
       dispatch({ type: 'next' })
     }, state.durations[state.curr])

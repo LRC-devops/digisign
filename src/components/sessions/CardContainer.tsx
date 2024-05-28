@@ -7,9 +7,9 @@ type Props = {
 }
 const CardContainer = ({ children, delay }: Props) => {
   return <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.0 + delay }}
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.5 + delay }}
     className="relative flex-[1_1_30%] min-w-[32%] flex flex-col overflow-hidden rounded-md text-lg">{children}</motion.div>
 }
 

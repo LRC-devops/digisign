@@ -1,5 +1,5 @@
 import { CalendarSession, ScheduledSession } from "../../components/sessions/session.model";
-import { build24Time } from "../../utils/datetime";
+import { build24Time, buildDate, getTime } from "../../utils/datetime";
 import { filterSessionsWithinHour, sortSessions } from "../../utils/sessions.filter";
 import { calendarSession, scheduledSession } from "../data/sessions.data";
 import axios from "axios"
@@ -62,9 +62,17 @@ describe("Should correctly filter out !Current Scheduled Sessions", () => {
     const s2 = { ...scheduledSession };
     const s3 = { ...scheduledSession };
 
-    s1.startTime = "10:00"
-    s2.startTime = "12:00"
-    s3.startTime = "13:00"
+    var baseDate = new Date();
+    var s1Start = new Date(baseDate);
+    s1Start.setMinutes(baseDate.getMinutes() + 1)
+    var s2Start = new Date(baseDate);
+    s2Start.setMinutes(baseDate.getMinutes() + 2)
+    var s3Start = new Date(baseDate);
+    s3Start.setMinutes(baseDate.getMinutes() - 5)
+
+    s1.startTime = build24Time(s1Start)
+    s2.startTime = build24Time(s2Start)
+    s3.startTime = build24Time(s3Start)
 
     const unsorted = [s3, s2, s1]
     sortSessions(unsorted)

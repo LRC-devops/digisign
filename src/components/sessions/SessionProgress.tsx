@@ -85,7 +85,7 @@ const SessionProgress = ({ session, delay }: Props) => {
           repeat: Infinity,
           duration: 1,
           repeatDelay: 20,
-          delay: delay * 5
+          delay: delay * 6
         }
       }
     }

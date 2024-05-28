@@ -3,7 +3,6 @@ import BottomGradient from "./BottomGradient"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
 import { FaComputer } from "react-icons/fa6"
-import { motion } from "framer-motion"
 import { IoSchool } from "react-icons/io5"
 
 type StatusProps = {
@@ -47,18 +46,13 @@ const serviceIcons = {
   [Service.SupplementalLearning]: <IoSchool />,
   default: <FaFolder />
 }
-const Box = ({ children, addClasses, idx }: BoxProps) => {
-  var offset = idx ? ((idx + 1) / 10) + 0.6 : 0.6
+const Box = ({ children, addClasses }: BoxProps) => {
 
-  return <motion.div
-    initial={{ y: -10, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ delay: offset, duration: 0.3 }}
-    className={`flex gap-1 items-center ${addClasses}`}>{children}</motion.div>
+  return <div
+    className={`flex gap-1 items-center ${addClasses}`}>{children}</div>
 }
 const CardDetails = ({ session }: Props) => {
   var icon;
-  console.log(session.service)
   switch (session.service) {
     case Service.PeerTutoring:
       icon = serviceIcons[Service.PeerTutoring]
