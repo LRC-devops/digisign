@@ -1,5 +1,5 @@
 import { CalendarSession, ScheduledSession } from "../../components/sessions/session.model";
-import { build24Time, buildDate, getTime } from "../../utils/datetime";
+import { build24Time } from "../../utils/datetime";
 import { filterSessionsWithinHour, sortSessions } from "../../utils/sessions.filter";
 import { calendarSession, scheduledSession } from "../data/sessions.data";
 import axios from "axios"
