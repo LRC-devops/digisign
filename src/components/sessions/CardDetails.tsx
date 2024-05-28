@@ -1,4 +1,4 @@
-import { FaBuilding, FaClock, FaFolder, FaUser, FaFolderOpen, FaNewspaper } from "react-icons/fa"
+import { FaBuilding, FaClock, FaFolder, FaUser } from "react-icons/fa"
 import BottomGradient from "./BottomGradient"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
@@ -45,27 +45,42 @@ const CardDetails = ({ session }: Props) => {
   return <BottomGradient>
     <>
       <CardStatus session={session} />
-      <Box idx={0} addClasses="text-white/75">
+      <Box idx={0} addClasses="text-3xl font-light ">
+        <>
+          {/* <FaFolderOpen /> */}
+          <p className="">{session.subject}</p>
+        </>
+      </Box>
+      {session instanceof ScheduledSession &&
+        <Box idx={1} addClasses="text-xl mb-3">
+          <>
+            {/* <FaNewspaper className="" /> */}
+            <p className="overflow-hidden truncate font-bold"><span className="font-normal text-white/60">Courses:</span> {session.course.join(", ")}</p>
+          </>
+        </Box>
+      }
+      <Box idx={2} addClasses="text-white/75">
         <>
           <FaClock />
           <p>{session.startTime} - {session.endTime}</p>
         </>
       </Box>
-      <Box idx={1} addClasses="flex gap-3 items-center text-white/75">
+      <Box idx={3} addClasses="flex gap-3 items-center text-white/75 mt-2">
         <>
-          <Box>
+          <Box addClasses="">
+
             <>
               <FaFolder />
               <p>{session.service}</p>
             </>
           </Box>
-          <Box>
+          <Box addClasses="">
             <>
               {session.mode === "in-person" ? <FaBuilding /> : session.mode === "zoom" ? <FaComputer /> : ""}
               <p>{session.mode}</p>
             </>
           </Box>
-          <Box>
+          <Box addClasses="">
             <>
               <FaUser />
               <p>{session.host}</p>
@@ -73,20 +88,6 @@ const CardDetails = ({ session }: Props) => {
           </Box>
         </>
       </Box>
-      <Box idx={2}>
-        <>
-          <FaFolderOpen />
-          <p className="font-bold">{session.subject}</p>
-        </>
-      </Box>
-      {session instanceof ScheduledSession &&
-        <Box idx={3}>
-          <>
-            <FaNewspaper className="" />
-            <p className="overflow-hidden truncate max-w-[90%]">{session.course.join(", ")}</p>
-          </>
-        </Box>
-      }
     </>
   </BottomGradient>
 
