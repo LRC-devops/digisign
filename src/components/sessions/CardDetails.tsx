@@ -4,6 +4,7 @@ import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
 import { FaComputer } from "react-icons/fa6"
 import { IoSchool } from "react-icons/io5"
+import { convDashedStrsToCapCase } from "../../utils/strings"
 
 type StatusProps = {
   session: ScheduledSession | CalendarSession
@@ -60,28 +61,23 @@ const Box = ({ children, addClasses }: BoxProps) => {
 const CardDetails = ({ session }: Props) => {
   const service: IService = {
     name: session.service,
-    friendlyName: "",
+    friendlyName: convDashedStrsToCapCase(session.service),
     icon: <></>
   }
   switch (service.name) {
     case Service.PeerTutoring:
-      service.friendlyName = "Peer Tutoring"
       service.icon = serviceIcons[Service.PeerTutoring]
       break;
     case Service.SSW:
-      service.friendlyName = "Study Skills Workshops"
       service.icon = serviceIcons[Service.SSW]
       break;
     case Service.Boost:
-      service.friendlyName = "Boost"
       service.icon = serviceIcons[Service.Boost]
       break;
     case Service.SupplementalLearning:
-      service.friendlyName = "Supplemental Learning"
       service.icon = serviceIcons[Service.SupplementalLearning]
       break;
     default:
-      service.friendlyName = service.name
       service.icon = serviceIcons.default
       break;
   }
