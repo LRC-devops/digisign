@@ -4,6 +4,7 @@ import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
 import { FaComputer } from "react-icons/fa6"
 import { IoSchool } from "react-icons/io5"
+import { convDashedStrsToCapCase } from "../../utils/strings"
 
 type StatusProps = {
   session: ScheduledSession | CalendarSession
@@ -46,28 +47,38 @@ const serviceIcons = {
   [Service.SupplementalLearning]: <IoSchool />,
   default: <FaFolder />
 }
+
+interface IService {
+  icon: ReactElement,
+  name: string,
+  friendlyName: string
+}
 const Box = ({ children, addClasses }: BoxProps) => {
 
   return <div
     className={`flex gap-1 items-center ${addClasses}`}>{children}</div>
 }
 const CardDetails = ({ session }: Props) => {
-  var icon;
-  switch (session.service) {
+  const service: IService = {
+    name: session.service,
+    friendlyName: convDashedStrsToCapCase(session.service),
+    icon: <></>
+  }
+  switch (service.name) {
     case Service.PeerTutoring:
-      icon = serviceIcons[Service.PeerTutoring]
+      service.icon = serviceIcons[Service.PeerTutoring]
       break;
     case Service.SSW:
-      icon = serviceIcons[Service.SSW]
+      service.icon = serviceIcons[Service.SSW]
       break;
     case Service.Boost:
-      icon = serviceIcons[Service.Boost]
+      service.icon = serviceIcons[Service.Boost]
       break;
     case Service.SupplementalLearning:
-      icon = serviceIcons[Service.SupplementalLearning]
+      service.icon = serviceIcons[Service.SupplementalLearning]
       break;
     default:
-      icon = serviceIcons.default
+      service.icon = serviceIcons.default
       break;
   }
   return <BottomGradient>
@@ -98,8 +109,8 @@ const CardDetails = ({ session }: Props) => {
           <Box addClasses="">
 
             <>
-              {icon}
-              <p>{session.service}</p>
+              {service.icon}
+              <p>{service.friendlyName}</p>
             </>
           </Box>
           <Box addClasses="">
