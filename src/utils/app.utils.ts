@@ -27,10 +27,13 @@ export const fetchSessions = async (sessions: Sessions, token: string): Promise<
     if (res instanceof Error) {
       throw res;
     }
+    console.log("[fetchSessions]: res: ", res)
     if (isDiffV2(sessions, res)) {
       let _sessions = await initalizeSessionClasses(res, token);
+      console.log(`[app.utils]: fetchSessions: returned: `, _sessions)
       return _sessions
     }
+    console.log(`[app.utils]: fetchSessions: returned null`,)
     return null;
     // call session.initalize
   } catch (err) {

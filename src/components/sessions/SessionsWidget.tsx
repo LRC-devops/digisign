@@ -106,8 +106,6 @@ const SessionsWidget = ({ sessions, error, setError }: Props) => {
   }
 
 
-
-
   return <div className="w-full h-full pt-10 flex flex-col gap-3">
     <ErrorBoundary>
       {state.sessions.length > 1 &&
