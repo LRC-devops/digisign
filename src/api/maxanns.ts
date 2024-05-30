@@ -37,6 +37,7 @@ export const preloadAnns = async (anns: MaxAnn[]): Promise<MaxAnn[] | Error> => 
 
 }
 
+// NOTE: cannot filter sessions by creation date as this is not something that I added to be stored in the database. But can ask client about it. 
 export const getAnnouncements = async (token: string): Promise<MaxAnn[] | Error> => {
   try {
     const res = await axios.get(`${API_BASE_URL}/announcements/maximized`, {

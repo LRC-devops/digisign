@@ -84,14 +84,14 @@ const CardDetails = ({ session }: Props) => {
   return <BottomGradient>
     <>
       <CardStatus session={session} />
-      <Box idx={0} addClasses="text-3xl font-light ">
+      <Box idx={0} addClasses="text-3xl font-light mb-0">
         <>
           {/* <FaFolderOpen /> */}
-          <p className="">{session.subject}</p>
+          <p className="leading-none">{session.subject}</p>
         </>
       </Box>
       {session instanceof ScheduledSession &&
-        <Box idx={1} addClasses="text-xl mb-3">
+        <Box idx={1} addClasses="text-xl mb-2">
           <>
             {/* <FaNewspaper className="" /> */}
             <p className="overflow-hidden truncate font-bold"><span className="font-normal text-white/60">Courses:</span> {session.course.join(", ")}</p>
@@ -113,12 +113,12 @@ const CardDetails = ({ session }: Props) => {
               <p>{service.friendlyName}</p>
             </>
           </Box>
-          <Box addClasses="">
-            <>
-              {session.mode === "in-person" ? <FaBuilding /> : session.mode === "zoom" ? <FaComputer /> : ""}
-              <p>{session.mode}</p>
-            </>
-          </Box>
+          {/* <Box addClasses=""> */}
+          {/*   <> */}
+          {/*     {session.mode === "in-person" ? <FaBuilding /> : session.mode === "zoom" ? <FaComputer /> : ""} */}
+          {/*     <p>{session.mode}</p> */}
+          {/*   </> */}
+          {/* </Box> */}
           <Box addClasses="">
             <>
               <FaUser />

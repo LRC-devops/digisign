@@ -25,7 +25,7 @@ const MaxAnn = ({ a }: Props) => {
       animate={animation.animate}
       transition={animation.transition}
       exit={animation.initial}
-      className="w-full h-full">
+      className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden">
       <img
         className="w-full h-full object-cover" src={a.image.src} crossOrigin="anonymous" />
     </motion.div>
@@ -35,10 +35,10 @@ const MaxAnn = ({ a }: Props) => {
       animate={animation.animate}
       transition={animation.transition}
       exit={animation.initial}
-      className={`w-full h-full overflow-hidden`}>
+      className="absolute top-0 left-0 right-0 bottom-0 overflow-hidden">
       <motion.img
         style={{ animation: pan }}
-        className={`w-full h-full`} src={a.image.src} crossOrigin="anonymous" />
+        className="w-full h-full object-cover" src={a.image.src} crossOrigin="anonymous" />
       <div className="absolute z-5 text-white bottom-0 left-0 right-0">
         <BottomGradient>
           <div className="p-2 mb-5">
