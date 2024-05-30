@@ -1,8 +1,7 @@
-import { FaBuilding, FaClock, FaFolder, FaRocket, FaTools, FaUser, FaUsers } from "react-icons/fa"
+import { FaClock, FaFolder, FaRocket, FaTools, FaUser, FaUsers } from "react-icons/fa"
 import BottomGradient from "./BottomGradient"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { ReactElement } from "react"
-import { FaComputer } from "react-icons/fa6"
 import { IoSchool } from "react-icons/io5"
 import { convDashedStrsToCapCase } from "../../utils/strings"
 
@@ -113,12 +112,6 @@ const CardDetails = ({ session }: Props) => {
               <p>{service.friendlyName}</p>
             </>
           </Box>
-          {/* <Box addClasses=""> */}
-          {/*   <> */}
-          {/*     {session.mode === "in-person" ? <FaBuilding /> : session.mode === "zoom" ? <FaComputer /> : ""} */}
-          {/*     <p>{session.mode}</p> */}
-          {/*   </> */}
-          {/* </Box> */}
           <Box addClasses="">
             <>
               <FaUser />
