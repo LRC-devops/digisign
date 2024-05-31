@@ -36,12 +36,10 @@ const buildKey = (el: Element) => {
 }
 export function isDiffV2(current: Element[], incoming: Element[]): boolean {
   if (current.length !== incoming.length) {
-    console.log(`[isDiffV2]: returned: true`)
     return true
   }
   var curr = current.map(buildKey);
   var inc = incoming.map(buildKey);
-  console.log(`[isDiffV2]: curr: `, curr, " inc: ", inc)
   let isDiff = false;
 
   var seen: { [key: string]: boolean } = {};
@@ -55,7 +53,6 @@ export function isDiffV2(current: Element[], incoming: Element[]): boolean {
       break;
     }
   }
-  console.log(`[isDiffV2]: returned: ${isDiff}`)
   return isDiff
 
 }

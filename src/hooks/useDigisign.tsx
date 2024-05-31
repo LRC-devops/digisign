@@ -3,7 +3,7 @@ import { initialState, reducer } from "../app.reducer"
 import { fetchAnnouncements, fetchConfig, fetchSessions } from "../utils/app.utils"
 
 /*
- * NOTE: main logic for App.tsx
+ *  main logic for App.tsx
  */
 
 export default function useDigisign(token: string) {

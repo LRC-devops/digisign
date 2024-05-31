@@ -1,5 +1,7 @@
+import { ReactElement } from "react"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { motion } from "framer-motion"
+import { MdCancel, MdLocationOn, MdNotificationsActive } from "react-icons/md"
 
 enum Severity {
   Error = "error",
@@ -13,7 +15,7 @@ type Props = {
 }
 
 const buildClass = (severity: Severity): string => {
-  var baseStr = "p-1 ml-2 mt-2 font-bold rounded-s "
+  var baseStr = "p-1 ml-2 mt-2 font-bold rounded-md flex items-center gap-1 overflow-hidden "
   switch (severity) {
     case Severity.Error:
       return baseStr + "bg-cancel-500"
@@ -31,18 +33,28 @@ const buildClass = (severity: Severity): string => {
 type TNotifier = {
   severity: Severity,
   message: string
+  icon: ReactElement
 }
 
 enum Reason {
   Cancelled = "cancelled",
   Temp = "temp",
   Location = "location",
+  TempAndLocation = "temp && location",
   None = "none"
 }
+var iconClass = "text-2xl"
 
 const buildNotifier = (session: ScheduledSession | CalendarSession): TNotifier[] => {
   var out: TNotifier[] = []
-  const reason: Reason = session.isCancelled() ? Reason.Cancelled : session instanceof ScheduledSession && session.isTemp() ? Reason.Temp : session.hasLocation() ? Reason.Location : Reason.None
+  let reason: Reason;
+
+  if (session.isCancelled()) reason = Reason.Cancelled
+  else if (session instanceof ScheduledSession && session.isTemp() && session.hasLocation()) reason = Reason.TempAndLocation
+  else if (session instanceof ScheduledSession && session.isTemp()) reason = Reason.Temp
+  else if (session.hasLocation()) reason = Reason.Location
+  else reason = Reason.None
+
   switch (reason) {
     // If cancelled can return early as no other info is important
     case Reason.None:
@@ -50,21 +62,36 @@ const buildNotifier = (session: ScheduledSession | CalendarSession): TNotifier[]
     case Reason.Cancelled:
       out.push({
         severity: Severity.Error,
-        message: "Cancelled"
+        message: "Cancelled",
+        icon: <MdCancel className={iconClass} />
       })
       break;
-    //@ts-ignore
-    // ts is complaining about a fallthrough casse, but that is exactly what I want
     case Reason.Temp:
       out.push({
         severity: Severity.Warn,
-        message: "Temporary Changes"
+        message: "Temporary Changes",
+        icon: <MdNotificationsActive className={iconClass} />
       })
+      break;
     case Reason.Location:
       out.push({
         severity: Severity.Warn,
-        message: `${session.location?.building} ${session?.location?.room && " - " + session.location?.room}`
+        message: `${session.location?.building} ${session?.location?.room && " - " + session.location?.room}`,
+        icon: <MdLocationOn className={iconClass} />
       })
+      break;
+    case Reason.TempAndLocation:
+      out.push({
+        severity: Severity.Warn,
+        message: `${session.location?.building} ${session?.location?.room && " - " + session.location?.room}`,
+        icon: <MdLocationOn className={iconClass} />
+      })
+      out.push({
+        severity: Severity.Warn,
+        message: "Temporary Changes",
+        icon: <MdNotificationsActive className={iconClass} />
+      })
+      break;
   }
   return out;
 }
@@ -83,6 +110,7 @@ const Notifier = ({ session }: Props) => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.3 }}
         className={buildClass(n?.severity)}>
+        {n.icon}
         <p>{n.message}</p></motion.div>
     ))}
   </div>
