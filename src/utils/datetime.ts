@@ -37,6 +37,31 @@ export const formatDateString = (date: number): string => {
 
   return `${date}${suffixes[lastNum]}`
 }
+export const getDateWithSuffix = (date: number): { date: string, suffix: string } => {
+  // check for teens => always ends in 'th'
+
+  if (date >= 10 && date <= 19) {
+    // return `${date}th`
+    return { date: date + "", suffix: "th" }
+  }
+  const suffixes: { [key: number]: string } = {
+    0: "th",
+    1: 'st',
+    2: 'nd',
+    3: 'rd',
+    4: 'th',
+    5: 'th',
+    6: 'th',
+    7: 'th',
+    8: 'th',
+    9: 'th'
+  }
+  var split = String(date).split('');
+  const lastNum = +split[split.length - 1];
+
+  // return `${date}${suffixes[lastNum]}`
+  return { date: date + "", suffix: suffixes[lastNum] }
+}
 
 export const getTime = (_date: Date): string => {
   var date = new Date(_date.toLocaleString("en", { timeZone: "America/Denver" }))
