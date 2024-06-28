@@ -5,7 +5,6 @@ type Props = {
 }
 const Bar = (props: Props) => {
 
-  props.status === "active" && console.log("[BAR]: current dur: ", props.duration)
   return <div className="w-full bg-slate-400/50 h-1 rounded-xl">
     {props.status === "active" &&
       <motion.div

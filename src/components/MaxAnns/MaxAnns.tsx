@@ -34,7 +34,6 @@ const reducer = (state: State, action: Action): State => {
       var curr = (state.curr + 1) % state.announcements.length
       var next = (curr + 1) % state.announcements.length
       var dur = state.announcements[curr].duration // plus animation offset
-      console.log("[MAX_ANNS]: new duration: ", dur)
       return {
         ...state, curr, next
       }
