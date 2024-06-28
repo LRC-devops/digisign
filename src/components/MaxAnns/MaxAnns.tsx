@@ -24,24 +24,24 @@ type Action =
   | { type: "reset" }
 
 
-const ANIMATION_OFFSET = 0
+const ANIMATION_OFFSET = 2700
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
       if (state.next === 0) {
         return state;
       }
-      console.log("[MAX_ANNS]: trigger next...")
       var curr = (state.curr + 1) % state.announcements.length
       var next = (curr + 1) % state.announcements.length
-      var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
+      var dur = state.announcements[curr].duration // plus animation offset
+      console.log("[MAX_ANNS]: new duration: ", dur)
       return {
         ...state, curr, next
       }
     case 'reset':
       var curr = 0;
       var next = 1;
-      var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
+      var dur = state.announcements[curr].duration
       return {
         ...state, curr, dur, next
       }
@@ -58,8 +58,9 @@ const initialState: State = {
 const MaxAnns = ({ setRunning, announcements }: Props) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, announcements })
 
+
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timeout = setTimeout(() => {
       if (state.next === 0) {
         dispatch({ type: "reset" })
         return setRunning(false)
@@ -70,7 +71,7 @@ const MaxAnns = ({ setRunning, announcements }: Props) => {
     }, state.dur)
 
     return () => {
-      clearInterval(interval)
+      clearTimeout(timeout)
     }
   }, [state])
 
@@ -78,6 +79,8 @@ const MaxAnns = ({ setRunning, announcements }: Props) => {
   if (state.announcements.length < 1) {
     return <></>
   }
+
+
 
   return <motion.div
     initial={{ opacity: 0 }}
@@ -89,7 +92,9 @@ const MaxAnns = ({ setRunning, announcements }: Props) => {
       <div className="w-full h-full p-5">
         <ProgressBars
           currentIdx={state.curr}
-          bars={state.announcements.map(a => a.duration + ANIMATION_OFFSET)}
+          // BUG: First announcement runs perfectly, but all subsuquent transitions run before bar is done animating AT A CONSTANT RATE!
+          // So at idx === 0, no offset is applied, but all others the ANIMATION_OFFSET is subtracted from the bar's duration.
+          bars={state.announcements.map((a, idx) => a.duration - (idx === 0 ? 0 : ANIMATION_OFFSET))}
         />
       </div>
     </div>

@@ -35,6 +35,9 @@ export const sortSessions = (sessions: RawSessions): void => {
 export const filterSessionsWithinHour = (sessions: RawSessions) => {
   sortSessions(sessions);
   return sessions.filter((s: RawSession) => {
+    if (s.mode !== "in-person") {
+      return;
+    }
     if (isScheduledSession(s)) {
       return isScheduledSessionWithinHour(s)
     }

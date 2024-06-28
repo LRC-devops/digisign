@@ -5,6 +5,7 @@ type Props = {
 }
 const Bar = (props: Props) => {
 
+  props.status === "active" && console.log("[BAR]: current dur: ", props.duration)
   return <div className="w-full bg-slate-400/50 h-1 rounded-xl">
     {props.status === "active" &&
       <motion.div
@@ -12,7 +13,7 @@ const Bar = (props: Props) => {
         animate={{ width: "100%" }}
         transition={{
           ease: "easeInOut",
-          duration: props.duration / 1200 // 1000 to convert from ms + 200 for buggy animation degration
+          duration: props.duration / 1000 // 1000 to convert from ms + 200 for buggy animation degration
         }}
         className="bg-slate-400 h-1 rounded-xl"></motion.div>}
     {props.status === "post" && <div className="bg-slate-400 h-1 rounded-xl w-full"></div>}

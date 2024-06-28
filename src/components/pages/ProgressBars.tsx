@@ -7,7 +7,6 @@ type Props = {
 }
 const ProgressBars = (props: Props) => {
 
-  console.log("[PROGRESS_BARS]: rerendered...")
 
   return <div className="w-full flex gap-3 h-2">
     {props.bars.map((dur: number, idx: number) => {
