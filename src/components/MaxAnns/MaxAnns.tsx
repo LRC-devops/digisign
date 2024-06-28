@@ -24,13 +24,14 @@ type Action =
   | { type: "reset" }
 
 
-const ANIMATION_OFFSET = 1000
+const ANIMATION_OFFSET = 0
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'next':
       if (state.next === 0) {
         return state;
       }
+      console.log("[MAX_ANNS]: trigger next...")
       var curr = (state.curr + 1) % state.announcements.length
       var next = (curr + 1) % state.announcements.length
       var dur = state.announcements[curr].duration + ANIMATION_OFFSET // plus animation offset
