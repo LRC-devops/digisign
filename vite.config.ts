@@ -6,8 +6,6 @@ import react from '@vitejs/plugin-react'
 export default ({ mode }: { mode: string }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
-  console.log("[vite.config.ts]: process.env: ", process.env.SENTRY_AUTH_TOKEN)
-
   return defineConfig({
     plugins: [react(), sentryVitePlugin({
       org: "ucdenver",
