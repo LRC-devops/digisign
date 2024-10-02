@@ -8,7 +8,7 @@ export default ({ mode }: { mode: string }) => {
 
   console.log("[vite.config.ts] \n    mode:", mode, "\n    building...")
 
-  if (!process.env.SENTRY_AUTH_TOKEN) {
+  if (!process.env.SENTRY_AUTH_TOKEN && mode !== "development") {
     throw new Error("No sentry auth token found in env!")
   }
 
@@ -21,15 +21,25 @@ export default ({ mode }: { mode: string }) => {
 
     server: {
       proxy: {
+        '/dev-api': {
+          changeOrigin: true,
+          target: "http://localhost:8080",
+          rewrite: (path) => path.replace(/^\/api/, '')
+        },
         '/api': {
-          target: ["https://lrc-api.wm.r.appspot.com", "http://localhost:8080", "https://lrc-storagebucket.s3.us-west-1.amazonaws.com"],
+          target: "https://lrc-api.wm.r.appspot.com",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        },
+        '/photos': {
+          target: "https://lrc-storagebucket.s3.us-west-1.amazonaws.com",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
         },
       }
     },
-
     build: {
+
       sourcemap: true
     }
   })
