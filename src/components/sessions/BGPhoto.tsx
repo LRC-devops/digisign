@@ -1,23 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CalendarSession, ScheduledSession } from "./session.model"
 import { motion } from "framer-motion"
+import { resolveAWSPhotoRedirect } from "../../api/photo"
 
+const IMG_FALLBACK = "/card-fallback.jpg"
 type Props = {
   session: ScheduledSession | CalendarSession
 }
 const BGPhoto = ({ session }: Props) => {
-  var uri = session.photo || session.upPhoto?.url || "/card-fallback.jpg"
   const [loading, setLoading] = useState(true)
+  const [uri, setUri] = useState(session.photo || session.upPhoto?.url || IMG_FALLBACK)
+  useEffect(() => {
+    /**
+     * Use axios to resolve the URI redirect from the LRC Server, then set the URI to the responseURL. 
+     * Handles errors to fallback and non-lrcapi urls return undefined.
+      */
+    async function resolveURI(uri: string) {
+      const res = await resolveAWSPhotoRedirect(uri)
+      let resolved_uri = IMG_FALLBACK
+      if (res instanceof Error) {
+        resolved_uri = IMG_FALLBACK
+      } else if (!res) {
+        resolved_uri = uri
+      } else {
+        resolved_uri = res
+      }
+      setUri(resolved_uri)
+      setLoading(false)
+    }
+    resolveURI(uri)
 
-  const img = new Image()
-  img.src = uri
-  img.onload = () => {
-    setLoading(false)
-  }
-  img.onerror = () => {
-    img.src = "/card-fallback.jpg"
+  }, [uri])
 
-  }
   return <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -28,7 +42,7 @@ const BGPhoto = ({ session }: Props) => {
     {loading ?
       <img className="w-full h-full object-cover blur" src="/card-fallback.jpg" />
       :
-      <img className="w-full h-full object-cover" src={img.src} />
+      <img className="w-full h-full object-cover" src={uri} />
 
     }
   </motion.div>

@@ -39,3 +39,18 @@ export const getUPPhoto = async (query: string, token: string): Promise<UPPhoto 
     return new Error(`An error occurred querying a photo from the server: ${error.message}`)
   }
 }
+
+export async function resolveAWSPhotoRedirect(uri: string): Promise<string | undefined | Error> {
+  try {
+    if (!uri.includes(API_BASE_URL)) {
+      return
+    }
+
+    const endpoint = await axios.get(uri)
+    return endpoint.request?.responseURL
+  } catch (err) {
+    console.error("[api/photo/resolveAWSPhotoRedirect]: error: ", err)
+    const error = err as Error
+    return new Error(`An error occurred resolving the AWS redirect: ${error.message}`)
+  }
+}
