@@ -24,6 +24,9 @@ const reducer = (state: State, action: Action): State => {
         ...state, curr: curr
       }
     case "setSessions":
+      if (!Array.isArray(action.payload)) {
+        return state
+      }
       var durations = action.payload.map((_, idx) => {
         switch (idx) {
           case 0:
@@ -108,15 +111,14 @@ const SessionsWidget = ({ sessions, error, setError }: Props) => {
 
   return <div className="w-full h-full pt-10 flex flex-col gap-3">
     <ErrorBoundary>
-      {state.sessions.length > 1 &&
+      {Array.isArray(state.sessions) && state.sessions.length > 1 &&
         <ProgressBars
           currentIdx={state.curr}
-          // bars={state.sessions.map((_: any) => DURATION)}
           bars={state.durations}
         />
       }
       <div className="w-full h-full flex flex-wrap justify-between gap-3">
-        {state.sessions[state.curr].map((s: (CalendarSession | ScheduledSession), idx: number) => (
+        {Array.isArray(state.sessions[state.curr]) && state.sessions[state.curr].map((s: (CalendarSession | ScheduledSession), idx: number) => (
           <AnimatePresence key={idx}>
             <SessionCard delay={idx / 10} session={s} key={idx} />
           </AnimatePresence>
