@@ -11,12 +11,11 @@ const BGPhoto = ({ session }: Props) => {
   const [img, setImg] = useState<HTMLImageElement>(() => {
     const image = new Image()
     image.src = uri
-    setLoading(false)
     image.onload = () => {
+      setLoading(false)
     }
     image.onerror = () => {
       img.src = "/card-fallback.jpg"
-      console.warn("image error", img)
     }
     image.className = "w-full h-full object-cover"
     return image
