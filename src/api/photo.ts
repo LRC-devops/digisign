@@ -40,14 +40,20 @@ export const getUPPhoto = async (query: string, token: string): Promise<UPPhoto 
   }
 }
 
+/**
+ * A query attribute was added to the server endpoint allowing for a JSON response with the url to avoid the redirect for this exact issue.
+ * Updated: 10.03.2024
+ */
 export async function resolveAWSPhotoRedirect(uri: string): Promise<string | undefined | Error> {
   try {
     if (!uri.includes(API_BASE_URL)) {
       return
     }
 
-    const endpoint = await axios.get(uri)
-    return endpoint.request?.responseURL
+    const res = await axios.get(`${uri}?no-redirect=true`)
+    const url = res?.data?.url
+    if (!url) throw new Error("API response was missing the expected 'url' attribute.")
+    return url
   } catch (err) {
     console.error("[api/photo/resolveAWSPhotoRedirect]: error: ", err)
     const error = err as Error
